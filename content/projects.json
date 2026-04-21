@@ -1,0 +1,308 @@
+[
+  {
+    "id": "openclaw",
+    "title": "OpenClaw Agent",
+    "description": "Structured OpenClaw's modular skill architecture across 6 domains at MyVyay, expanding to 5+ concurrent sessions via a real-time Python logging pipeline. Implemented context pruning strategies to reduce LLM token usage and improve agent task success rate by 45%.",
+    "stats": "6 skill domains · 5+ concurrent sessions · 45% higher task success · context pruning",
+    "tags": [
+      "Python",
+      "OpenClaw",
+      "LLMs",
+      "GitHub API",
+      "Prompt Engineering",
+      "Context Pruning"
+    ],
+    "diagramType": "multi-agent",
+    "side": "right",
+    "order": 1,
+    "featured": true,
+    "nodes": [
+      {
+        "id": "input",
+        "label": "User Command",
+        "icon": "💬",
+        "description": "Natural language task from the user via messaging interface"
+      },
+      {
+        "id": "planner",
+        "label": "Agent Planner",
+        "icon": "🧠",
+        "description": "LLM-based planner decomposes task into sub-goals and selects skill"
+      },
+      {
+        "id": "memory",
+        "label": "Memory & Context",
+        "icon": "🗃️",
+        "description": "Context pruning to reduce token usage while preserving task history"
+      },
+      {
+        "id": "ide",
+        "label": "IDE Skill",
+        "icon": "💻",
+        "description": "Automated IDE operations — file creation, code edits, terminal commands"
+      },
+      {
+        "id": "github",
+        "label": "GitHub Skill",
+        "icon": "🔀",
+        "description": "GitHub API integration — PRs, issues, commits, workflow triggers"
+      },
+      {
+        "id": "logger",
+        "label": "Python Logger",
+        "icon": "📋",
+        "description": "Real-time logging pipeline tracking agent actions across 5+ sessions"
+      },
+      {
+        "id": "output",
+        "label": "Task Result",
+        "icon": "✅",
+        "description": "Completed task delivered back to user with execution trace"
+      }
+    ],
+    "edges": [
+      {
+        "from": "input",
+        "to": "planner",
+        "animated": true
+      },
+      {
+        "from": "planner",
+        "to": "memory",
+        "animated": true
+      },
+      {
+        "from": "memory",
+        "to": "planner",
+        "animated": false
+      },
+      {
+        "from": "planner",
+        "to": "ide",
+        "animated": true
+      },
+      {
+        "from": "planner",
+        "to": "github",
+        "animated": true
+      },
+      {
+        "from": "ide",
+        "to": "logger",
+        "animated": true
+      },
+      {
+        "from": "github",
+        "to": "logger",
+        "animated": true
+      },
+      {
+        "from": "logger",
+        "to": "output",
+        "animated": true
+      }
+    ]
+  },
+  {
+    "id": "tapvision",
+    "title": "TapVision — Multi-Model AI Pipeline",
+    "description": "Developed TapVision's multi-format ingestion pipeline converting PDF, URL, and text inputs via 4 orchestrated Hugging Face models — TTS, STT, translation (MarianMT), and summarisation. Built at CDAC with Streamlit frontend, reducing latency by 35% and model size by 50% via INT4 quantization.",
+    "stats": "4 orchestrated models · 35% latency reduction · 50% smaller models · multilingual",
+    "tags": [
+      "Python",
+      "Hugging Face",
+      "Ollama",
+      "MarianMT",
+      "gTTS",
+      "Streamlit",
+      "Docker",
+      "PyTorch"
+    ],
+    "diagramType": "pipeline",
+    "side": "left",
+    "order": 2,
+    "featured": true,
+    "nodes": [
+      {
+        "id": "input",
+        "label": "Multi-Format Input",
+        "icon": "📄",
+        "description": "Accepts PDF, URL, and raw text — parsed and normalized"
+      },
+      {
+        "id": "summarise",
+        "label": "Summarisation",
+        "icon": "📝",
+        "description": "Hugging Face summarisation model condenses long-form content"
+      },
+      {
+        "id": "translate",
+        "label": "Translation",
+        "icon": "🌐",
+        "description": "MarianMT multilingual translation across 3+ target languages"
+      },
+      {
+        "id": "tts",
+        "label": "Text-to-Speech",
+        "icon": "🔊",
+        "description": "gTTS / pyttsx3 for audio output with voice command support"
+      },
+      {
+        "id": "stt",
+        "label": "Speech-to-Text",
+        "icon": "🎙️",
+        "description": "STT model for voice-driven query input"
+      },
+      {
+        "id": "quant",
+        "label": "INT4 Quantization",
+        "icon": "⚡",
+        "description": "Ollama INT4 quantization — 50% model size reduction, faster inference"
+      },
+      {
+        "id": "ui",
+        "label": "Streamlit UI",
+        "icon": "🖥️",
+        "description": "Web interface for multi-format input, output playback, and translation"
+      }
+    ],
+    "edges": [
+      {
+        "from": "input",
+        "to": "summarise",
+        "animated": true
+      },
+      {
+        "from": "summarise",
+        "to": "translate",
+        "animated": true
+      },
+      {
+        "from": "translate",
+        "to": "tts",
+        "animated": true
+      },
+      {
+        "from": "stt",
+        "to": "summarise",
+        "animated": true
+      },
+      {
+        "from": "tts",
+        "to": "quant",
+        "animated": false
+      },
+      {
+        "from": "quant",
+        "to": "ui",
+        "animated": true
+      },
+      {
+        "from": "translate",
+        "to": "ui",
+        "animated": true
+      }
+    ]
+  },
+  {
+    "id": "cms-agent",
+    "title": "Multilingual CMS AI Agent",
+    "description": "Piloted an LLM-based AI agent into a proprietary CMS via REST APIs at MyVyay, adapting the NLP layer for 3+ languages and multi-format inputs. Optimised with Hugging Face and Ollama INT4 quantization, cutting setup time by 50% and IT dependency by 70%.",
+    "stats": "3+ languages · 50% faster setup · 70% less IT dependency · production CMS",
+    "tags": [
+      "Python",
+      "LLMs",
+      "REST APIs",
+      "NLP",
+      "Docker",
+      "JavaScript",
+      "Hugging Face",
+      "Ollama"
+    ],
+    "diagramType": "pipeline",
+    "side": "right",
+    "order": 3,
+    "featured": true,
+    "nodes": [
+      {
+        "id": "user",
+        "label": "CMS User",
+        "icon": "👤",
+        "description": "User interacts via the CMS interface in their preferred language"
+      },
+      {
+        "id": "api",
+        "label": "REST API Layer",
+        "icon": "🔌",
+        "description": "FastAPI/Flask REST endpoints bridging CMS frontend to AI backend"
+      },
+      {
+        "id": "nlp",
+        "label": "NLP Processor",
+        "icon": "🧠",
+        "description": "Language detection and multi-format input parsing (text, voice, file)"
+      },
+      {
+        "id": "llm",
+        "label": "LLM Agent",
+        "icon": "🤖",
+        "description": "Ollama-hosted LLM with INT4 quantization for efficient local inference"
+      },
+      {
+        "id": "translate",
+        "label": "Multilingual Layer",
+        "icon": "🌐",
+        "description": "Handles 3+ languages — English, Hindi, Marathi — with Hugging Face models"
+      },
+      {
+        "id": "cms",
+        "label": "CMS Backend",
+        "icon": "🗄️",
+        "description": "Proprietary CMS — content creation, editing, and management automation"
+      },
+      {
+        "id": "response",
+        "label": "AI Response",
+        "icon": "✅",
+        "description": "Contextual response delivered in user's language with CMS action taken"
+      }
+    ],
+    "edges": [
+      {
+        "from": "user",
+        "to": "api",
+        "animated": true
+      },
+      {
+        "from": "api",
+        "to": "nlp",
+        "animated": true
+      },
+      {
+        "from": "nlp",
+        "to": "translate",
+        "animated": true
+      },
+      {
+        "from": "translate",
+        "to": "llm",
+        "animated": true
+      },
+      {
+        "from": "llm",
+        "to": "cms",
+        "animated": true
+      },
+      {
+        "from": "cms",
+        "to": "response",
+        "animated": true
+      },
+      {
+        "from": "response",
+        "to": "user",
+        "animated": false
+      }
+    ]
+  }
+]

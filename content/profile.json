@@ -1,0 +1,17 @@
+{
+  "name": "Varad Kodgire",
+  "title": "applied ai developer · llm systems · agent builder",
+  "heading": "I build AI that actually ships.",
+  "subheading": "LLM pipelines, agent systems, and workflow automation — designed to run in production, not just notebooks.",
+  "bio": [
+    "Applied AI Developer with hands-on experience building LLM-powered applications, RAG pipelines, and workflow-driven AI systems. Skilled in designing tool-calling agents, integrating APIs, and automating processes using tools like n8n.",
+    "Experienced in optimizing latency and API usage while developing scalable AI features across NLP and generative AI use cases, with practical deployment using Python, Hugging Face, and Docker.",
+    "Currently building OpenClaw agent skills at MyVyay — enabling automated IDE operations, GitHub workflows, and memory-aware context handling."
+  ],
+  "about": [
+    "Open to full-time roles as an AI Developer, LLM Engineer, or Applied AI Researcher. I move fast, ship working systems, and care deeply about the gap between a cool demo and a reliable product.",
+    "My approach: understand the problem first, build the simplest thing that works, then optimize. Every project here was built and deployed — not just prototyped."
+  ],
+  "location": "Pune | Bangalore, India",
+  "lastUpdated": "2026-04-04"
+}

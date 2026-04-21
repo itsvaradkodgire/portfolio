@@ -1,0 +1,67 @@
+{
+  "terminalCommands": [
+    {
+      "id": "1",
+      "command": "docker build -t model-server:v2.1 .",
+      "output": "✓ Image built (14.2s) — 1.24GB, 12 layers",
+      "status": "success",
+      "delayAfter": 1200
+    },
+    {
+      "id": "2",
+      "command": "python evaluate.py --model v2.1 --dataset test",
+      "output": "✓ 847 tests passed — accuracy: 99.2% · F1: 0.941 · latency P95: 18ms",
+      "status": "success",
+      "delayAfter": 1000
+    },
+    {
+      "id": "3",
+      "command": "kubectl apply -f deploy/production.yaml",
+      "output": "✓ Deployed to prod cluster — 3 replicas · rolling update complete",
+      "status": "success",
+      "delayAfter": 1400
+    },
+    {
+      "id": "4",
+      "command": "curl -s api.internal/v2/health | jq .",
+      "output": "{\n  \"status\": \"healthy\",\n  \"latency_ms\": 12,\n  \"gpu\": \"active\",\n  \"version\": \"2.1\",\n  \"replicas\": 3\n}",
+      "status": "success",
+      "delayAfter": 800
+    },
+    {
+      "id": "5",
+      "command": "mlflow models serve -m runs:/abc123/model --port 5001",
+      "output": "✓ Model serving at localhost:5001 — experiment: prod-v2.1",
+      "status": "success",
+      "delayAfter": 1000
+    },
+    {
+      "id": "6",
+      "command": "python monitor.py --check-drift --model v2.1",
+      "output": "✓ No drift detected — PSI: 0.08 (threshold: 0.20) · all features stable",
+      "status": "success",
+      "delayAfter": 900
+    }
+  ],
+  "sentimentKeywords": {
+    "positive": [
+      "amazing", "excellent", "great", "love", "fantastic", "wonderful",
+      "awesome", "perfect", "happy", "good", "brilliant", "outstanding",
+      "impressive", "delightful", "best", "superb", "thrilled", "excited",
+      "pleased", "incredible", "spectacular", "marvelous", "exceptional"
+    ],
+    "negative": [
+      "terrible", "awful", "bad", "hate", "horrible", "dreadful",
+      "worst", "disappointed", "frustrating", "angry", "poor", "useless",
+      "broken", "failure", "disgusting", "unacceptable", "pathetic", "annoying",
+      "slow", "buggy", "crashed", "broken", "waste", "regret"
+    ],
+    "neutral": [
+      "okay", "fine", "alright", "average", "normal", "typical", "standard"
+    ]
+  },
+  "sentimentThresholds": {
+    "positive": 0.6,
+    "negative": 0.4
+  }
+}

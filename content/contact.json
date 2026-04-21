@@ -1,0 +1,10 @@
+{
+  "heading": "Let's build something.",
+  "subtext": "Open to full-time roles, internships, and interesting AI projects.",
+  "links": [
+    { "id": "github",   "label": "GitHub",   "url": "https://github.com/itsvaradkodgire",                        "icon": "Github",   "visible": true },
+    { "id": "linkedin", "label": "LinkedIn", "url": "https://linkedin.com/in/varad-kodgire-050171208",            "icon": "Linkedin", "visible": true },
+    { "id": "email",    "label": "Email",    "url": "mailto:itsvaradkodgire@gmail.com",                           "icon": "Mail",     "visible": true },
+    { "id": "phone",    "label": "Phone",    "url": "tel:+918805200924",                                          "icon": "Phone",    "visible": true }
+  ]
+}

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "ai-ml",
+    "label": "AI / ML",
+    "icon": "🧠",
+    "items": [
+      { "name": "LLMs",             "level": 5, "note": "Daily work — tool-calling agents, prompt engineering, context pruning, multi-stage inference" },
+      { "name": "Generative AI",    "level": 5, "note": "RAG pipelines, multi-model orchestration, text/speech/translation workflows" },
+      { "name": "NLP",              "level": 4, "note": "Sentiment analysis, summarisation, multilingual NLP, named entity recognition" },
+      { "name": "Computer Vision",  "level": 3, "note": "OpenCV, real-time image processing, edge detection — used in projects and demos" },
+      { "name": "Deep Learning",    "level": 4, "note": "PyTorch and TensorFlow for fine-tuning and training on Hugging Face models" },
+      { "name": "Machine Learning", "level": 4, "note": "Supervised/unsupervised models, feature engineering, MLlib for distributed ML" },
+      { "name": "RAG",              "level": 4, "note": "Built retrieval-augmented generation pipelines with FAISS and VectorDB" }
+    ]
+  },
+  {
+    "id": "frameworks",
+    "label": "Frameworks & Tools",
+    "icon": "🔧",
+    "items": [
+      { "name": "Hugging Face",     "level": 5, "note": "Primary model hub — transformers, PEFT, TTS, STT, MarianMT, fine-tuning" },
+      { "name": "Ollama",           "level": 4, "note": "Local LLM serving with INT4 quantization — 50% model size reduction in production" },
+      { "name": "LangChain",        "level": 4, "note": "Agent chains, tool use, memory, RAG — used in CMS bot and pipeline projects" },
+      { "name": "FastAPI / Flask",  "level": 4, "note": "REST API design for AI backends and CMS integration endpoints" },
+      { "name": "n8n",              "level": 3, "note": "Workflow automation for AI pipelines and CRM-style lead generation systems" },
+      { "name": "FAISS / VectorDB", "level": 3, "note": "Vector similarity search for RAG and knowledge retrieval systems" },
+      { "name": "Streamlit",        "level": 4, "note": "Rapid AI app prototyping — TapVision TTS frontend built with Streamlit" }
+    ]
+  },
+  {
+    "id": "languages",
+    "label": "Languages",
+    "icon": "💻",
+    "items": [
+      { "name": "Python",     "level": 5, "note": "Primary language across all projects — ML, agents, APIs, scripting, automation" },
+      { "name": "SQL",        "level": 4, "note": "Query design, data wrangling, analytics — PostgreSQL and MySQL" },
+      { "name": "JavaScript", "level": 3, "note": "CMS integration, REST API consumption, basic frontend scripting" },
+      { "name": "Java",       "level": 3, "note": "Academic background — OOP, data structures, algorithms" },
+      { "name": "Git",        "level": 4, "note": "Version control, GitHub API automation, workflow integration via OpenClaw skills" }
+    ]
+  },
+  {
+    "id": "cloud-devops",
+    "label": "Cloud & DevOps",
+    "icon": "☁️",
+    "items": [
+      { "name": "Docker",      "level": 4, "note": "Containerising ML models and AI backends for consistent deployment" },
+      { "name": "AWS",         "level": 3, "note": "EC2, S3 for model hosting and data storage in internship projects" },
+      { "name": "Azure",       "level": 2, "note": "Azure services explored during CDAC coursework" },
+      { "name": "GCP",         "level": 2, "note": "GCP basics — compute and storage for AI workloads" },
+      { "name": "Kubernetes",  "level": 2, "note": "Container orchestration — used in deployment architecture at CDAC" },
+      { "name": "Linux",       "level": 4, "note": "Daily development environment — shell scripting, process management, SSH" }
+    ]
+  },
+  {
+    "id": "mlops-tools",
+    "label": "MLOps Tools",
+    "icon": "📈",
+    "items": [
+      { "name": "MLlib",           "level": 3, "note": "Used for real-time sentiment analysis pipeline on distributed data at CDAC" },
+      { "name": "Model Fine-tuning","level": 4, "note": "LoRA/QLoRA via Hugging Face PEFT — reduced training iteration time by 30%" },
+      { "name": "INT4 Quantization","level": 4, "note": "Ollama INT4 — deployed quantized models cutting size 50% in production" },
+      { "name": "Prompt Engineering","level": 5, "note": "Core daily skill — context design, few-shot, chain-of-thought, output structuring" },
+      { "name": "Data Pipelines",  "level": 3, "note": "Multi-stage inference workflows for TTS, STT, translation, and summarisation" }
+    ]
+  }
+]

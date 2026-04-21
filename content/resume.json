@@ -1,0 +1,91 @@
+{
+  "fullName": "Varad Kodgire",
+  "email": "itsvaradkodgire@gmail.com",
+  "phone": "+91 8805200924",
+  "location": "Pune | Bangalore, India",
+  "linkedinUrl": "https://linkedin.com/in/varad-kodgire-050171208",
+  "githubUrl": "https://github.com/itsvaradkodgire",
+  "websiteUrl": "https://varadkodgire.dev",
+  "baseSummary": "Applied AI Developer with hands-on experience building LLM-powered applications, RAG pipelines, and workflow-driven AI systems. Skilled in designing tool-calling agents, integrating APIs, and automating processes using tools like n8n. Experienced in optimizing latency and API usage while developing scalable AI features across NLP and generative AI use cases, with practical deployment using Python, Hugging Face, and Docker.",
+  "education": [
+    {
+      "id": "edu-1",
+      "degree": "Post Graduate Diploma in Big Data Analytics",
+      "school": "CDAC Bangalore",
+      "year": "2025",
+      "gpa": "74.38% (Grade A)",
+      "details": "Generative AI, Deep Learning, NLP, Distributed Systems, PyTorch, Hugging Face"
+    },
+    {
+      "id": "edu-2",
+      "degree": "B.E. in Electronics & Telecommunication",
+      "school": "MMCOE, Pune",
+      "year": "2024",
+      "gpa": "7.2 CGPA",
+      "details": "Signal Processing, Embedded Systems, Data Structures, Programming"
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert-1",
+      "name": "Python for Data Science",
+      "issuer": "IBM",
+      "year": "2024"
+    },
+    {
+      "id": "cert-2",
+      "name": "MySQL Mastery",
+      "issuer": "Nikolai Schuler",
+      "year": "2024"
+    },
+    {
+      "id": "cert-3",
+      "name": "Post Graduate Diploma in Big Data Analytics",
+      "issuer": "C-DAC",
+      "year": "2025"
+    }
+  ],
+  "experience": [
+    {
+      "id": "exp-1",
+      "company": "MyVyay",
+      "title": "AI Development & Research Intern",
+      "startDate": "Feb 2025",
+      "endDate": "Present",
+      "location": "Pune, India",
+      "bullets": [
+        "Developed OpenClaw agent skills using Python, enabling automated IDE operations, GitHub workflows, and memory-aware context handling; implemented context pruning strategies to reduce LLM token usage and improve response consistency.",
+        "Designed and deployed an AI-driven lead generation pipeline with CRM-style automation, integrating multi-stage inference workflows (text-to-speech, summarization, translation) to streamline outreach and enhance output relevance.",
+        "Built and integrated a multilingual LLM-based chatbot into a proprietary CMS using REST APIs; optimized model performance using Hugging Face and Ollama (INT4 quantization), reducing model size and improving deployment efficiency."
+      ]
+    },
+    {
+      "id": "exp-2",
+      "company": "CDAC",
+      "title": "AI & Deep Learning Intern",
+      "startDate": "Sep 2024",
+      "endDate": "Feb 2025",
+      "location": "Bangalore, India",
+      "bullets": [
+        "Deployed production-grade GenAI fine-tuning pipelines using PyTorch, Hugging Face, and Docker, reducing model training iteration time by 30% and establishing scalable NLP deployment architecture.",
+        "Engineered TapVision TTS web app using Streamlit, gTTS, and MarianMT, integrating voice commands, translation, and summarisation — improving model update efficiency by 40% via modular backend architecture.",
+        "Launched real-time Sentiment Analysis pipeline using MLlib, Twitter API, and Python, detecting social emotion trends across live data and delivering summarised insights with 85% classification accuracy."
+      ]
+    }
+  ],
+  "pdfStyle": "clean-modern",
+  "pdfAccentColor": "#d4834e",
+  "includeSections": {
+    "education": true,
+    "certifications": true,
+    "experience": true,
+    "projects": true,
+    "skills": true
+  },
+  "aiSettings": {
+    "systemPromptOverride": "",
+    "alwaysEmphasize": ["LLM", "agent", "RAG", "production", "OpenClaw", "Hugging Face", "Python"],
+    "neverInclude": [],
+    "tone": "confident"
+  }
+}
