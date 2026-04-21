@@ -83,7 +83,7 @@ export function HeroChat() {
         <span>~/varad · ask me anything</span>
         <span style={{ color: '#5ba8a0', display: 'flex', alignItems: 'center', gap: 6 }}>
           <span className="lc-status-dot" />
-          gemma-3-27b
+          gemini-2.5-flash
         </span>
       </div>
 

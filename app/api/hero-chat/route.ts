@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const MODEL = 'gemma-3-27b-it';
+const MODEL = 'gemini-2.5-flash';
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
 const SYSTEM_PROMPT = `You are an AI assistant embedded in Varad Kodgire's portfolio website. Answer questions about Varad concisely and directly. Match the terminal aesthetic — be terse, technical, and honest. 1–3 sentences unless asked for more.
