@@ -1,4 +1,3 @@
-import Anthropic from '@anthropic-ai/sdk';
 import type {
   TailorRequest,
   TailorResponse,
@@ -8,7 +7,9 @@ import type {
   ResumeData,
 } from './types';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// Gemini (Google AI Studio) — reuses the same free-tier key as the hero chat.
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 // ─── Cache (in-memory, TTL 24h) ──────────────────────────────────────────────
 const cache = new Map<string, { data: TailorResponse; expiresAt: number }>();
@@ -135,14 +136,35 @@ export async function tailorProfile(
       ? `Analyze this candidate's fit for the following role: "${request.input}". Provide the full analysis and tailored resume.`
       : `Analyze this job description and tailor the candidate's profile accordingly:\n\n${request.input}`;
 
-  const message = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 4096,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userMessage }],
+  const apiKey = process.env.GOOGLE_AI_KEY;
+  if (!apiKey) {
+    throw new Error('GOOGLE_AI_KEY not configured');
+  }
+
+  const resp = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents: [{ role: 'user', parts: [{ text: userMessage }] }],
+      generationConfig: {
+        temperature: 0.4,
+        maxOutputTokens: 4096,
+        responseMimeType: 'application/json',
+      },
+    }),
   });
 
-  const raw = message.content[0].type === 'text' ? message.content[0].text : '';
+  if (!resp.ok) {
+    const errText = await resp.text();
+    throw new Error(`Gemini API error ${resp.status}: ${errText}`);
+  }
+
+  const data = (await resp.json()) as {
+    candidates?: { content?: { parts?: { text?: string }[] } }[];
+  };
+
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
 
   // Strip any markdown code fences if the model added them
   const jsonStr = raw.replace(/^```(?:json)?\n?/m, '').replace(/\n?```$/m, '').trim();

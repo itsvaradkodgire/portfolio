@@ -5,190 +5,221 @@ import {
   Text,
   View,
   StyleSheet,
-  Font,
 } from '@react-pdf/renderer';
 import type { TailoredResume, ResumeData } from './types';
 
-// Register a clean system font
-Font.register({
-  family: 'Inter',
-  fonts: [
-    { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff', fontWeight: 400 },
-    { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiJ-Ek-_EeA.woff', fontWeight: 600 },
-    { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hiJ-Ek-_EeA.woff', fontWeight: 700 },
-  ],
-});
+// Use react-pdf's built-in Helvetica family (Helvetica / Helvetica-Bold).
+// This avoids fetching external web fonts at render time, which fails on
+// serverless (fontkit only accepts TTF/OTF, not the .woff files Google serves)
+// and makes PDF generation deterministic and network-independent.
+
+const ACCENT = '#2f5d8f';   // restrained navy-blue accent (used sparingly)
+const INK = '#1a1a2e';      // primary heading ink
+const BODY = '#33333d';     // body text
+const MUTED = '#6b7280';    // secondary/meta text
+const RULE = '#d9dee5';     // hairline rules
 
 const styles = StyleSheet.create({
   page: {
-    fontFamily: 'Inter',
-    fontSize: 10,
-    color: '#1a1a1a',
+    fontFamily: 'Helvetica',
+    fontSize: 9.5,
+    color: BODY,
     backgroundColor: '#ffffff',
-    paddingTop: 40,
-    paddingBottom: 40,
-    paddingHorizontal: 48,
-    lineHeight: 1.5,
+    paddingTop: 42,
+    paddingBottom: 46,
+    paddingHorizontal: 50,
+    lineHeight: 1.45,
   },
   header: {
-    marginBottom: 20,
-    borderBottom: '1.5pt solid #d4834e',
-    paddingBottom: 14,
+    marginBottom: 16,
+    borderBottom: `2pt solid ${ACCENT}`,
+    paddingBottom: 12,
   },
   name: {
-    fontSize: 24,
-    fontWeight: 700,
-    color: '#0f0f0f',
-    letterSpacing: -0.5,
-    marginBottom: 4,
+    fontSize: 22,
+    fontFamily: 'Helvetica-Bold',
+    color: INK,
+    letterSpacing: 0.3,
+    lineHeight: 1.1,
+    marginBottom: 3,
   },
   jobTitle: {
-    fontSize: 12,
-    color: '#d4834e',
-    fontWeight: 600,
-    marginBottom: 6,
+    fontSize: 11,
+    color: ACCENT,
+    fontFamily: 'Helvetica-Bold',
+    lineHeight: 1.2,
+    marginBottom: 8,
   },
   contactRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 14,
   },
   contactItem: {
-    fontSize: 9,
-    color: '#555',
+    fontSize: 8.5,
+    color: MUTED,
+    marginRight: 12,
   },
   section: {
-    marginBottom: 14,
+    marginBottom: 12,
   },
   sectionTitle: {
     fontSize: 9,
-    fontWeight: 700,
-    color: '#d4834e',
+    fontFamily: 'Helvetica-Bold',
+    color: INK,
     textTransform: 'uppercase',
-    letterSpacing: 1.2,
+    letterSpacing: 1.4,
+    lineHeight: 1.2,
     marginBottom: 6,
-    borderBottom: '0.5pt solid #e8e0d8',
+    borderBottom: `0.75pt solid ${RULE}`,
     paddingBottom: 3,
   },
   summary: {
-    fontSize: 10,
-    color: '#333',
-    lineHeight: 1.6,
+    fontSize: 9.5,
+    color: BODY,
+    lineHeight: 1.5,
   },
   experienceItem: {
-    marginBottom: 10,
+    marginBottom: 9,
   },
   experienceHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 2,
+    alignItems: 'baseline',
+    marginBottom: 1,
   },
   companyTitle: {
     fontSize: 10.5,
-    fontWeight: 700,
-    color: '#111',
+    fontFamily: 'Helvetica-Bold',
+    color: INK,
   },
   dateText: {
-    fontSize: 9,
-    color: '#777',
+    fontSize: 8.5,
+    color: MUTED,
   },
   roleTitle: {
     fontSize: 9.5,
-    color: '#555',
-    fontWeight: 600,
-    marginBottom: 4,
+    color: ACCENT,
+    fontFamily: 'Helvetica-Bold',
+    marginBottom: 3,
   },
   bullet: {
-    fontSize: 9.5,
-    color: '#333',
-    marginLeft: 10,
-    marginBottom: 2,
-    lineHeight: 1.5,
-  },
-  skillsGrid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
+    marginBottom: 2.5,
+    paddingRight: 4,
   },
-  skillChip: {
-    backgroundColor: '#f5f0eb',
-    borderRadius: 3,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+  bulletDot: {
+    width: 10,
+    fontSize: 9.5,
+    color: ACCENT,
+    lineHeight: 1.45,
+  },
+  bulletText: {
+    flex: 1,
+    fontSize: 9.5,
+    color: BODY,
+    lineHeight: 1.45,
+  },
+  skillRow: {
+    flexDirection: 'row',
+    marginBottom: 3,
+  },
+  skillLabel: {
+    width: 96,
     fontSize: 9,
-    color: '#333',
-    fontWeight: 600,
+    fontFamily: 'Helvetica-Bold',
+    color: INK,
+    lineHeight: 1.4,
+  },
+  skillValues: {
+    flex: 1,
+    fontSize: 9,
+    color: BODY,
+    lineHeight: 1.4,
   },
   projectItem: {
-    marginBottom: 8,
+    marginBottom: 7,
+  },
+  projectHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    marginBottom: 1,
   },
   projectTitle: {
     fontSize: 10,
-    fontWeight: 700,
-    color: '#111',
-    marginBottom: 2,
+    fontFamily: 'Helvetica-Bold',
+    color: INK,
+  },
+  projectTagline: {
+    fontSize: 8,
+    color: MUTED,
   },
   projectDesc: {
     fontSize: 9.5,
-    color: '#444',
-    lineHeight: 1.5,
-  },
-  projectTags: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-    marginTop: 3,
-  },
-  projectTag: {
-    fontSize: 8.5,
-    color: '#d4834e',
-    fontWeight: 600,
+    color: BODY,
+    lineHeight: 1.45,
   },
   eduItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 4,
+    alignItems: 'baseline',
+    marginBottom: 5,
   },
   eduDegree: {
-    fontSize: 10,
-    fontWeight: 700,
-    color: '#111',
+    fontSize: 9.75,
+    fontFamily: 'Helvetica-Bold',
+    color: INK,
   },
   eduSchool: {
-    fontSize: 9.5,
-    color: '#555',
+    fontSize: 9,
+    color: MUTED,
   },
   eduYear: {
-    fontSize: 9,
-    color: '#777',
+    fontSize: 8.5,
+    color: MUTED,
+  },
+  certItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    marginBottom: 3,
   },
   footer: {
     position: 'absolute',
-    bottom: 20,
-    left: 48,
-    right: 48,
+    bottom: 22,
+    left: 50,
+    right: 50,
     textAlign: 'center',
-    fontSize: 8,
-    color: '#aaa',
-    borderTop: '0.5pt solid #eee',
-    paddingTop: 8,
+    fontSize: 7.5,
+    color: '#9aa1ab',
+    borderTop: `0.5pt solid ${RULE}`,
+    paddingTop: 7,
   },
 });
 
 interface PDFProps {
   tailored: TailoredResume;
   baseData: ResumeData;
+  /** Optional categorized skills (used by the base resume). Falls back to the
+   *  flat `tailored.skills` list rendered on a single line when omitted. */
+  skillGroups?: { label: string; values: string[] }[];
 }
 
 function BulletPoint({ text }: { text: string }) {
   return (
-    <Text style={styles.bullet}>• {text}</Text>
+    <View style={styles.bullet}>
+      <Text style={styles.bulletDot}>•</Text>
+      <Text style={styles.bulletText}>{text}</Text>
+    </View>
   );
 }
 
-export function ResumePDF({ tailored, baseData }: PDFProps) {
+export function ResumePDF({ tailored, baseData, skillGroups }: PDFProps) {
   return (
-    <Document>
+    <Document
+      title={`${baseData.fullName} — Resume`}
+      author={baseData.fullName}
+    >
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
@@ -198,8 +229,8 @@ export function ResumePDF({ tailored, baseData }: PDFProps) {
             {baseData.email && <Text style={styles.contactItem}>{baseData.email}</Text>}
             {baseData.phone && <Text style={styles.contactItem}>{baseData.phone}</Text>}
             {baseData.location && <Text style={styles.contactItem}>{baseData.location}</Text>}
-            {baseData.linkedinUrl && <Text style={styles.contactItem}>{baseData.linkedinUrl.replace('https://', '')}</Text>}
-            {baseData.githubUrl && <Text style={styles.contactItem}>{baseData.githubUrl.replace('https://', '')}</Text>}
+            {baseData.linkedinUrl && <Text style={styles.contactItem}>{baseData.linkedinUrl.replace(/^https?:\/\//, '')}</Text>}
+            {baseData.githubUrl && <Text style={styles.contactItem}>{baseData.githubUrl.replace(/^https?:\/\//, '')}</Text>}
           </View>
         </View>
 
@@ -210,14 +241,19 @@ export function ResumePDF({ tailored, baseData }: PDFProps) {
         </View>
 
         {/* Skills */}
-        {tailored.skills.length > 0 && (
+        {(skillGroups?.length || tailored.skills.length > 0) && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Core Skills</Text>
-            <View style={styles.skillsGrid}>
-              {tailored.skills.map((skill, i) => (
-                <Text key={i} style={styles.skillChip}>{skill}</Text>
-              ))}
-            </View>
+            {skillGroups && skillGroups.length > 0 ? (
+              skillGroups.map((group, i) => (
+                <View key={i} style={styles.skillRow}>
+                  <Text style={styles.skillLabel}>{group.label}</Text>
+                  <Text style={styles.skillValues}>{group.values.join(' · ')}</Text>
+                </View>
+              ))
+            ) : (
+              <Text style={styles.skillValues}>{tailored.skills.join(' · ')}</Text>
+            )}
           </View>
         )}
 
@@ -226,7 +262,7 @@ export function ResumePDF({ tailored, baseData }: PDFProps) {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Experience</Text>
             {tailored.experience.map((exp, i) => (
-              <View key={i} style={styles.experienceItem}>
+              <View key={i} style={styles.experienceItem} wrap={false}>
                 <View style={styles.experienceHeader}>
                   <Text style={styles.companyTitle}>{exp.company}</Text>
                   <Text style={styles.dateText}>{exp.startDate} – {exp.endDate}</Text>
@@ -245,14 +281,14 @@ export function ResumePDF({ tailored, baseData }: PDFProps) {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Selected Projects</Text>
             {tailored.projects.map((proj, i) => (
-              <View key={i} style={styles.projectItem}>
-                <Text style={styles.projectTitle}>{proj.title}</Text>
-                <Text style={styles.projectDesc}>{proj.description}</Text>
-                <View style={styles.projectTags}>
-                  {proj.tags.map((tag, j) => (
-                    <Text key={j} style={styles.projectTag}>{tag}{j < proj.tags.length - 1 ? ' ·' : ''}</Text>
-                  ))}
+              <View key={i} style={styles.projectItem} wrap={false}>
+                <View style={styles.projectHeader}>
+                  <Text style={styles.projectTitle}>{proj.title}</Text>
+                  {proj.tags.length > 0 && (
+                    <Text style={styles.projectTagline}>{proj.tags.slice(0, 5).join(' · ')}</Text>
+                  )}
                 </View>
+                <Text style={styles.projectDesc}>{proj.description}</Text>
               </View>
             ))}
           </View>
@@ -263,10 +299,10 @@ export function ResumePDF({ tailored, baseData }: PDFProps) {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Education</Text>
             {baseData.education.map((edu, i) => (
-              <View key={i} style={styles.eduItem}>
+              <View key={i} style={styles.eduItem} wrap={false}>
                 <View>
                   <Text style={styles.eduDegree}>{edu.degree}</Text>
-                  <Text style={styles.eduSchool}>{edu.school}{edu.gpa ? ` · GPA: ${edu.gpa}` : ''}</Text>
+                  <Text style={styles.eduSchool}>{edu.school}{edu.gpa ? ` · ${edu.gpa}` : ''}</Text>
                 </View>
                 <Text style={styles.eduYear}>{edu.year}</Text>
               </View>
@@ -279,17 +315,17 @@ export function ResumePDF({ tailored, baseData }: PDFProps) {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Certifications</Text>
             {baseData.certifications.map((cert, i) => (
-              <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
-                <Text style={{ fontSize: 9.5, color: '#333', fontWeight: 600 }}>{cert.name}</Text>
-                <Text style={{ fontSize: 9, color: '#777' }}>{cert.issuer} · {cert.year}</Text>
+              <View key={i} style={styles.certItem}>
+                <Text style={styles.eduDegree}>{cert.name}</Text>
+                <Text style={styles.eduYear}>{cert.issuer} · {cert.year}</Text>
               </View>
             ))}
           </View>
         )}
 
         {/* Footer */}
-        <Text style={styles.footer}>
-          Generated by AI Resume Tailor · varadkodgire.dev
+        <Text style={styles.footer} fixed>
+          {baseData.websiteUrl ? baseData.websiteUrl.replace(/^https?:\/\//, '') : 'varadkodgire.dev'}
         </Text>
       </Page>
     </Document>

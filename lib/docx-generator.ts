@@ -11,7 +11,7 @@ import type { TailoredResume, ResumeData } from './types';
 function hr() {
   return new Paragraph({
     border: {
-      bottom: { color: 'D4834E', space: 1, style: BorderStyle.SINGLE, size: 6 },
+      bottom: { color: '2F5D8F', space: 1, style: BorderStyle.SINGLE, size: 6 },
     },
     spacing: { after: 120 },
   });
@@ -49,7 +49,7 @@ export async function generateDocx(
       spacing: { after: 60 },
     }),
     new Paragraph({
-      children: [new TextRun({ text: tailored.title, size: 26, color: 'D4834E', bold: true })],
+      children: [new TextRun({ text: tailored.title, size: 26, color: '2F5D8F', bold: true })],
       spacing: { after: 60 },
     }),
     new Paragraph({
@@ -121,7 +121,7 @@ export async function generateDocx(
           spacing: { after: 60 },
         }),
         new Paragraph({
-          children: [new TextRun({ text: proj.tags.join(' · '), size: 18, color: 'D4834E', bold: true })],
+          children: [new TextRun({ text: proj.tags.join(' · '), size: 18, color: '2F5D8F', bold: true })],
           spacing: { after: 120 },
         })
       );
@@ -172,7 +172,7 @@ export async function generateDocx(
         {
           id: 'Heading2',
           name: 'Heading 2',
-          run: { size: 20, bold: true, color: 'D4834E', font: 'Calibri' },
+          run: { size: 20, bold: true, color: '2F5D8F', font: 'Calibri' },
           paragraph: { spacing: { before: 240, after: 60 } },
         },
       ],

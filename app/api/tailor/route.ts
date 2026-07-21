@@ -26,9 +26,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Job description too short (need 50+ chars)' }, { status: 400 });
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.GOOGLE_AI_KEY) {
     return NextResponse.json(
-      { error: 'AI service not configured. Please add ANTHROPIC_API_KEY to your environment.' },
+      { error: 'AI service not configured. Please add GOOGLE_AI_KEY to your environment.' },
       { status: 503 }
     );
   }

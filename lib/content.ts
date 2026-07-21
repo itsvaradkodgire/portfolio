@@ -63,6 +63,17 @@ export async function readContent<T>(key: ContentKey): Promise<T> {
 }
 
 export async function writeContent<T>(key: ContentKey, data: T): Promise<void> {
+  // On Vercel (production) the filesystem is read-only, so edits MUST go to
+  // Vercel Blob. If the Blob token is missing, fail loudly with a clear message
+  // instead of silently writing to an ephemeral/read-only filesystem — that was
+  // the cause of "admin saves that never persist".
+  if (process.env.NODE_ENV === 'production' && !process.env.BLOB_READ_WRITE_TOKEN) {
+    throw new Error(
+      'Content storage is not configured. Set BLOB_READ_WRITE_TOKEN in your ' +
+        'Vercel project (connect a Blob store) so admin edits can persist.'
+    );
+  }
+
   if (isDev) {
     await writeToLocal(key, data);
   } else {

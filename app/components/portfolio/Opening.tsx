@@ -140,7 +140,7 @@ export function Opening() {
 
             {/* CTA row */}
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <a className="lc-btn-primary" href="/resume.pdf" download>$ download resume.pdf ↓</a>
+              <a className="lc-btn-primary" href="/api/resume/download" download="varad-kodgire-resume.pdf">$ download resume.pdf ↓</a>
               <a className="lc-btn-ghost" href="#demos">$ run live demos</a>
             </div>
           </div>

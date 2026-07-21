@@ -1,13 +1,6 @@
-import { NextResponse } from 'next/server';
-import { readContent, writeContent } from '@/lib/content';
-import { isAuthenticated } from '@/lib/auth';
+import { createContentRoute } from '@/lib/content-route';
 
-export async function GET() {
-  return NextResponse.json(await readContent('resume'));
-}
+// Always read/write live storage (Vercel Blob in prod); never statically cache.
+export const dynamic = 'force-dynamic';
 
-export async function PUT(request: Request) {
-  if (!(await isAuthenticated())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  await writeContent('resume', await request.json());
-  return NextResponse.json({ success: true });
-}
+export const { GET, PUT } = createContentRoute('resume');

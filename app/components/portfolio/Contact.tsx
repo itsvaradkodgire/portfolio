@@ -47,8 +47,8 @@ export function Contact() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <a
               className="lc-btn-primary"
-              href="/resume.pdf"
-              download
+              href="/api/resume/download"
+              download="varad-kodgire-resume.pdf"
               style={{ justifyContent: 'center', fontSize: 13, padding: '12px 16px' }}
             >
               $ download resume.pdf ↓
