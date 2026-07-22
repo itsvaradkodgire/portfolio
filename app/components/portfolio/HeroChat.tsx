@@ -48,11 +48,34 @@ export function HeroChat() {
           messages: next.map((m) => ({ role: m.role, content: m.text })),
         }),
       });
-      const data = await res.json() as { text?: string; error?: string };
-      const reply = data.text ?? data.error ?? 'no response.';
-      setMessages([...next, { role: 'assistant', text: reply }]);
+
+      if (!res.ok || !res.body) {
+        // Error responses come back as JSON, not a stream.
+        let msg = 'no response.';
+        try {
+          const data = await res.json() as { error?: string };
+          msg = data.error ?? msg;
+        } catch { /* ignore */ }
+        setMessages([...next, { role: 'assistant', text: msg }]);
+        return;
+      }
+
+      // Stream tokens into a single assistant message as they arrive.
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let acc = '';
+      setMessages([...next, { role: 'assistant', text: '' }]);
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        acc += decoder.decode(value, { stream: true });
+        setMessages([...next, { role: 'assistant', text: acc }]);
+      }
+      if (!acc) {
+        setMessages([...next, { role: 'assistant', text: 'no response.' }]);
+      }
     } catch {
-      setMessages([...next, { role: 'assistant', text: 'connection error — is ollama running?' }]);
+      setMessages([...next, { role: 'assistant', text: 'connection error — please try again.' }]);
     } finally {
       setLoading(false);
       inputRef.current?.focus({ preventScroll: true });

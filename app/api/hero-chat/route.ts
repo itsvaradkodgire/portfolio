@@ -6,7 +6,7 @@ import type { Profile, Project, SkillCategory, ResumeData, ContactData } from '@
 export const dynamic = 'force-dynamic';
 
 const MODEL = 'gemini-2.5-flash';
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent`;
 
 // Build the system prompt from LIVE content, so the chatbot's knowledge always
 // matches what's in the admin panel instead of a stale hardcoded blob.
@@ -103,23 +103,62 @@ export async function POST(req: NextRequest) {
   };
 
   try {
-    const resp = await fetch(`${API_URL}?key=${apiKey}`, {
+    const resp = await fetch(`${API_URL}?alt=sse&key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
 
-    if (!resp.ok) {
+    if (!resp.ok || !resp.body) {
       const err = await resp.text();
       return NextResponse.json({ error: `API error: ${err}` }, { status: resp.status });
     }
 
-    const data = await resp.json() as {
-      candidates?: { content: { parts: { text: string }[] } }[];
-    };
+    // Transform Gemini's SSE stream into a plain text token stream the client
+    // can append as it arrives, so replies render token-by-token.
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    const encoder = new TextEncoder();
+    let buffer = '';
 
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? 'no response.';
-    return NextResponse.json({ text });
+    const stream = new ReadableStream({
+      async pull(controller) {
+        const { done, value } = await reader.read();
+        if (done) {
+          controller.close();
+          return;
+        }
+        buffer += decoder.decode(value, { stream: true });
+        // SSE frames are separated by blank lines; each data line is JSON.
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith('data:')) continue;
+          const json = trimmed.slice(5).trim();
+          if (!json || json === '[DONE]') continue;
+          try {
+            const parsed = JSON.parse(json) as {
+              candidates?: { content?: { parts?: { text?: string }[] } }[];
+            };
+            const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (chunk) controller.enqueue(encoder.encode(chunk));
+          } catch {
+            /* ignore partial/non-JSON keepalive lines */
+          }
+        }
+      },
+      cancel() {
+        reader.cancel();
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+      },
+    });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
     return NextResponse.json({ error: msg }, { status: 503 });
