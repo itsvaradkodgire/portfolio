@@ -79,6 +79,12 @@ export async function POST(request: Request) {
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     console.error('[tailor] Error:', message);
+    if (err instanceof Error && err.name === 'RateLimitedError') {
+      return NextResponse.json(
+        { error: 'The AI is busy right now (free-tier limit). Please try again in a minute.' },
+        { status: 429 }
+      );
+    }
     return NextResponse.json(
       { error: 'Analysis failed. Please try again.' },
       { status: 500 }

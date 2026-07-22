@@ -8,8 +8,19 @@ import type {
 } from './types';
 
 // Gemini (Google AI Studio) — reuses the same free-tier key as the hero chat.
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+// Try several models so a single model's daily quota doesn't break tailoring.
+const GEMINI_MODELS = process.env.GEMINI_MODEL
+  ? [process.env.GEMINI_MODEL]
+  : ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash-lite'];
+
+// Thrown when every model is rate-limited, so the API route can show a friendly
+// message instead of a raw provider error.
+export class RateLimitedError extends Error {
+  constructor() {
+    super('AI is busy right now (rate limit). Please try again in a minute.');
+    this.name = 'RateLimitedError';
+  }
+}
 
 // ─── Cache (in-memory, TTL 24h) ──────────────────────────────────────────────
 const cache = new Map<string, { data: TailorResponse; expiresAt: number }>();
@@ -141,30 +152,50 @@ export async function tailorProfile(
     throw new Error('GOOGLE_AI_KEY not configured');
   }
 
-  const resp = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ role: 'user', parts: [{ text: userMessage }] }],
-      generationConfig: {
-        temperature: 0.4,
-        maxOutputTokens: 4096,
-        responseMimeType: 'application/json',
-      },
-    }),
+  const requestBody = JSON.stringify({
+    system_instruction: { parts: [{ text: systemPrompt }] },
+    contents: [{ role: 'user', parts: [{ text: userMessage }] }],
+    generationConfig: {
+      temperature: 0.4,
+      maxOutputTokens: 4096,
+      responseMimeType: 'application/json',
+    },
   });
 
-  if (!resp.ok) {
-    const errText = await resp.text();
-    throw new Error(`Gemini API error ${resp.status}: ${errText}`);
+  // Try each model; fall through on rate-limit (429) or 5xx.
+  let raw = '';
+  let sawRateLimit = false;
+  for (const model of GEMINI_MODELS) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: requestBody,
+    });
+
+    if (resp.ok) {
+      const data = (await resp.json()) as {
+        candidates?: { content?: { parts?: { text?: string }[] } }[];
+      };
+      raw = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+      break;
+    }
+
+    if (resp.status === 429) {
+      sawRateLimit = true;
+      continue; // try the next model
+    }
+    if (resp.status >= 500) {
+      continue; // transient — try the next model
+    }
+    // Other client errors: stop and surface a generic failure.
+    throw new Error(`Gemini API error ${resp.status}`);
   }
 
-  const data = (await resp.json()) as {
-    candidates?: { content?: { parts?: { text?: string }[] } }[];
-  };
-
-  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+  if (!raw) {
+    if (sawRateLimit) throw new RateLimitedError();
+    throw new Error('AI analysis is temporarily unavailable.');
+  }
 
   // Strip any markdown code fences if the model added them
   const jsonStr = raw.replace(/^```(?:json)?\n?/m, '').replace(/\n?```$/m, '').trim();
