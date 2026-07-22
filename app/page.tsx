@@ -3,6 +3,7 @@ import { Opening } from '@/app/components/portfolio/Opening';
 import { Experience } from '@/app/components/portfolio/Experience';
 import { LiveDemos } from '@/app/components/portfolio/LiveDemos';
 import { Work } from '@/app/components/portfolio/Work';
+import { HireMe } from '@/app/components/portfolio/HireMe';
 import { TechStack } from '@/app/components/portfolio/TechStack';
 import { Contact } from '@/app/components/portfolio/Contact';
 import { getProfile, getProjects, getSkills, getContact, getResume } from '@/lib/content';
@@ -28,6 +29,7 @@ export default async function HomePage() {
         <Experience resume={resume} />
         <LiveDemos />
         <TechStack skills={skills} />
+        <HireMe projects={projects} />
         <Contact contact={contact} profile={profile} />
       </main>
     </>

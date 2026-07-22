@@ -69,6 +69,11 @@ export function Nav() {
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
             [ stack ]
           </a>
+          <a className="lc-hide-sm" href="#hire-me" style={{ color: 'var(--accent)', transition: 'color .15s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-hover)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--accent)')}>
+            [ hire me ]
+          </a>
           <a className="lc-hide-sm" href="#contact" style={{ color: 'var(--text-muted)', transition: 'color .15s' }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
