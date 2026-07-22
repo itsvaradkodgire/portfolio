@@ -1,10 +1,11 @@
 'use client';
 
-import { SentimentDemo } from './SentimentDemo';
-import { AgentDemo } from './AgentDemo';
+import { SemanticSearchDemo } from './SemanticSearchDemo';
+import { NeuralNetDemo } from './NeuralNetDemo';
 import { WebcamEdgeDemo } from './WebcamEdgeDemo';
+import type { Project } from '@/lib/types';
 
-export function LiveDemos() {
+export function LiveDemos({ projects }: { projects: Project[] }) {
   return (
     <section id="demos" className="lc-section">
       <div className="lc-container">
@@ -23,16 +24,16 @@ export function LiveDemos() {
           marginBottom: 36,
           lineHeight: 1.65,
         }}>
-          Don&apos;t take my word for it. Every demo below runs in your browser right now —
-          no uploads, no api keys, no cold start. The work speaks.
+          Don&apos;t take my word for it. Every demo below is the real algorithm running in your
+          browser right now — no uploads, no api keys, no cold start. View source and check.
         </p>
 
         <div
           className="lc-grid-2"
           style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}
         >
-          <SentimentDemo />
-          <AgentDemo />
+          <SemanticSearchDemo projects={projects} />
+          <NeuralNetDemo />
         </div>
 
         <WebcamEdgeDemo />

@@ -27,7 +27,7 @@ export default async function HomePage() {
         <Opening profile={profile} />
         <Work projects={projects} />
         <Experience resume={resume} />
-        <LiveDemos />
+        <LiveDemos projects={projects} />
         <TechStack skills={skills} />
         <HireMe projects={projects} />
         <Contact contact={contact} profile={profile} />

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { DemoHead } from './SentimentDemo';
+import { DemoHead } from './DemoHead';
 
 export function WebcamEdgeDemo() {
   const videoRef = useRef<HTMLVideoElement>(null);
