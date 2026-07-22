@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { HeroChat } from './HeroChat';
+import type { Profile } from '@/lib/types';
 
 const TERMINAL_LINES = [
   { c: 'docker build -t openclaw-agent:v2.1 .', o: '✓ image built (14.2s) — 1.24gb, 12 layers' },
@@ -78,7 +79,16 @@ function LCTerminal() {
   );
 }
 
-export function Opening() {
+export function Opening({ profile }: { profile: Profile }) {
+  // Title looks like "applied ai developer · llm systems · agent builder".
+  // Render the first segment as the accent role line and the rest as the muted
+  // "// …" subtitle, so the hero stays editable from the admin Profile page.
+  const titleParts = (profile.title ?? '').split('·').map((s) => s.trim()).filter(Boolean);
+  const roleLine = titleParts[0] ?? profile.title ?? '';
+  const roleRest = titleParts.slice(1).join(' · ');
+  const intro = profile.bio?.[0] ?? profile.subheading ?? '';
+  const nameLower = (profile.name ?? '').toLowerCase();
+
   return (
     <section style={{ paddingTop: 64, paddingBottom: 56 }}>
       <div className="lc-container">
@@ -105,9 +115,11 @@ export function Opening() {
                 marginBottom: 24,
               }}
             >
-              varad kodgire<br/>
-              <span style={{ color: 'var(--accent)' }}>applied ai developer</span><br/>
-              <span style={{ color: 'var(--text-muted)', fontSize: 26 }}>// llm systems · agent builder</span>
+              {nameLower}<br/>
+              <span style={{ color: 'var(--accent)' }}>{roleLine}</span><br/>
+              {roleRest && (
+                <span style={{ color: 'var(--text-muted)', fontSize: 26 }}>// {roleRest}</span>
+              )}
             </h1>
 
             <div style={{
@@ -118,9 +130,7 @@ export function Opening() {
               marginBottom: 28,
               maxWidth: 480,
             }}>
-              I build LLM pipelines, tool-calling agents, and workflow automation that run
-              in production — not just notebooks. Currently shipping OpenClaw agent skills
-              at MyVyay.
+              {intro}
             </div>
 
             {/* Metadata grid */}
@@ -129,13 +139,15 @@ export function Opening() {
               fontSize: 11.5, marginBottom: 30,
             }}>
               <span style={{ color: 'var(--text-muted)' }}>location</span>
-              <span>pune, in · open to bangalore + remote</span>
+              <span>{profile.location ?? 'pune, in · open to bangalore + remote'}</span>
               <span style={{ color: 'var(--text-muted)' }}>role</span>
-              <span>full-time · ai dev · llm eng · applied researcher</span>
-              <span style={{ color: 'var(--text-muted)' }}>stack</span>
-              <span>python · llms · docker · fastapi · huggingface</span>
-              <span style={{ color: 'var(--text-muted)' }}>updated</span>
-              <span>2026-04-21</span>
+              <span>{profile.title}</span>
+              {profile.lastUpdated && (
+                <>
+                  <span style={{ color: 'var(--text-muted)' }}>updated</span>
+                  <span>{profile.lastUpdated}</span>
+                </>
+              )}
             </div>
 
             {/* CTA row */}

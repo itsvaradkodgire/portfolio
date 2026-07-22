@@ -1,6 +1,19 @@
 'use client';
 
-export function Contact() {
+import type { ContactData, Profile } from '@/lib/types';
+
+export function Contact({ contact, profile }: { contact: ContactData; profile: Profile }) {
+  const linkBy = (id: string) => contact.links.find((l) => l.id === id && l.visible);
+  const email = linkBy('email');
+  const github = linkBy('github');
+  const linkedin = linkBy('linkedin');
+  const phone = linkBy('phone');
+
+  const emailAddr = email?.url.replace(/^mailto:/, '') ?? '';
+  const phoneLabel = phone?.url.replace(/^tel:/, '') ?? '';
+
+  const year = new Date().getFullYear();
+
   return (
     <section id="contact" className="lc-section" style={{ paddingBottom: 56 }}>
       <div className="lc-container">
@@ -30,16 +43,14 @@ export function Contact() {
               color: 'var(--text-primary)', marginBottom: 12,
               lineHeight: 1.25, letterSpacing: '-0.01em',
             }}>
-              Hiring someone<br />who actually ships?
+              {contact.heading}
             </h2>
             <p style={{
               fontFamily: 'var(--font-sans)', fontSize: 15,
               color: 'var(--text-secondary)', maxWidth: 500, lineHeight: 1.65,
               margin: 0,
             }}>
-              Open to AI Developer, LLM Engineer, and Applied AI Researcher roles.
-              Fast replies — usually within a day. Pune-based, remote-friendly,
-              willing to relocate to Bangalore.
+              {contact.subtext}
             </p>
           </div>
 
@@ -53,45 +64,54 @@ export function Contact() {
             >
               $ download resume.pdf ↓
             </a>
-            <a
-              className="lc-btn-ghost"
-              href="mailto:itsvaradkodgire@gmail.com"
-              style={{ justifyContent: 'center' }}
-            >
-              itsvaradkodgire@gmail.com
-            </a>
+            {email && (
+              <a
+                className="lc-btn-ghost"
+                href={email.url}
+                style={{ justifyContent: 'center' }}
+              >
+                {emailAddr}
+              </a>
+            )}
             <div style={{
               display: 'flex', gap: 14, fontSize: 11,
               color: 'var(--text-muted)', justifyContent: 'center', marginTop: 6,
+              flexWrap: 'wrap',
             }}>
-              <a
-                href="https://github.com/itsvaradkodgire"
-                target="_blank" rel="noopener noreferrer"
-                style={{ transition: 'color .15s' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-              >
-                github ↗
-              </a>
-              <span>·</span>
-              <a
-                href="https://linkedin.com/in/varad-kodgire-050171208"
-                target="_blank" rel="noopener noreferrer"
-                style={{ transition: 'color .15s' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-              >
-                linkedin ↗
-              </a>
-              <span>·</span>
-              <a
-                href="tel:+918805200924"
-                style={{ transition: 'color .15s' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-              >
-                +91 8805 200 924
-              </a>
+              {github && (
+                <a
+                  href={github.url}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ transition: 'color .15s' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+                >
+                  github ↗
+                </a>
+              )}
+              {github && linkedin && <span>·</span>}
+              {linkedin && (
+                <a
+                  href={linkedin.url}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ transition: 'color .15s' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+                >
+                  linkedin ↗
+                </a>
+              )}
+              {linkedin && phone && <span>·</span>}
+              {phone && (
+                <a
+                  href={phone.url}
+                  style={{ transition: 'color .15s' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+                >
+                  {phoneLabel}
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -102,7 +122,7 @@ export function Contact() {
           display: 'flex', justifyContent: 'space-between',
           fontSize: 10.5, color: 'var(--text-faint)', letterSpacing: '0.08em',
         }}>
-          <span>© 2026 varad kodgire · pune / bangalore</span>
+          <span>© {year} {(profile.name ?? '').toLowerCase()}{profile.location ? ` · ${profile.location.toLowerCase()}` : ''}</span>
           <span>exit 0</span>
         </div>
       </div>

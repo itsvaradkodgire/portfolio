@@ -88,6 +88,39 @@ function ProjectForm({ project, onSave, onCancel }: {
 
       <TagInput label="Tech Tags" value={form.tags ?? []} onChange={(t) => update('tags', t)} />
 
+      {/* Case-study fields (shown in the public Work section) */}
+      <div className="pt-4 mt-2 border-t border-border-subtle">
+        <p className="font-mono text-xs text-accent-primary uppercase tracking-wider mb-4">Case Study (public Work section)</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <FormField label="Org" value={form.org ?? ''}
+            onChange={(e) => update('org', (e.target as HTMLInputElement).value)}
+            helpText='e.g. "MyVyay", "personal"' />
+          <FormField label="Year" value={form.year ?? ''}
+            onChange={(e) => update('year', (e.target as HTMLInputElement).value)} />
+          <FormField label="Status" value={form.status ?? ''}
+            onChange={(e) => update('status', (e.target as HTMLInputElement).value)}
+            helpText="active · shipped · production" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <FormField label="Impact Metric" value={form.metric ?? ''}
+            onChange={(e) => update('metric', (e.target as HTMLInputElement).value)}
+            helpText='e.g. "+45% task success"' />
+          <FormField label="GitHub URL" value={form.githubUrl ?? ''} type="url"
+            onChange={(e) => update('githubUrl', (e.target as HTMLInputElement).value)} />
+        </div>
+        <div className="mt-4 space-y-4">
+          <FormField as="textarea" rows={2} label="Problem" value={form.problem ?? ''}
+            onChange={(e) => update('problem', (e.target as HTMLTextAreaElement).value)} />
+          <FormField as="textarea" rows={3} label="Approach" value={form.approach ?? ''}
+            onChange={(e) => update('approach', (e.target as HTMLTextAreaElement).value)} />
+          <FormField as="textarea" rows={2} label="Outcome" value={form.outcome ?? ''}
+            onChange={(e) => update('outcome', (e.target as HTMLTextAreaElement).value)} />
+          <FormField as="textarea" rows={6} label="Pipeline Diagram (ASCII, monospace)" value={form.diagram ?? ''}
+            onChange={(e) => update('diagram', (e.target as HTMLTextAreaElement).value)}
+            helpText="Optional ASCII diagram shown on the right of the case study" />
+        </div>
+      </div>
+
       <div className="grid grid-cols-3 gap-4">
         <div>
           <label className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-1.5">Diagram Type</label>

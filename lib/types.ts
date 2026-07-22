@@ -6,6 +6,7 @@ export interface Profile {
   subheading: string;
   bio: string[];          // paragraphs
   about: string[];
+  location?: string;
   lastUpdated?: string;
 }
 
@@ -41,6 +42,18 @@ export interface Project {
   side: DiagramSide;
   order: number;
   featured?: boolean;
+
+  // ─── Case-study fields (shown in the public Work section) ─────────────────
+  org?: string;           // e.g. "MyVyay", "CDAC", "personal"
+  year?: string;          // e.g. "2026"
+  status?: string;        // "active" | "shipped" | "production" | free text
+  metric?: string;        // headline impact, e.g. "+45% task success"
+  stack?: string[];       // tech chips (falls back to tags if empty)
+  problem?: string;
+  approach?: string;
+  outcome?: string;
+  diagram?: string;       // ASCII pipeline diagram (monospace)
+  githubUrl?: string;
 }
 
 // ─── Skills ─────────────────────────────────────────────────────────────────

@@ -1,22 +1,34 @@
 import { Nav } from '@/app/components/portfolio/Nav';
 import { Opening } from '@/app/components/portfolio/Opening';
+import { Experience } from '@/app/components/portfolio/Experience';
 import { LiveDemos } from '@/app/components/portfolio/LiveDemos';
 import { Work } from '@/app/components/portfolio/Work';
 import { TechStack } from '@/app/components/portfolio/TechStack';
 import { Contact } from '@/app/components/portfolio/Contact';
+import { getProfile, getProjects, getSkills, getContact, getResume } from '@/lib/content';
 
-export const revalidate = 60;
+// Always render from live content storage so admin edits appear immediately.
+export const dynamic = 'force-dynamic';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [profile, projects, skills, contact, resume] = await Promise.all([
+    getProfile(),
+    getProjects(),
+    getSkills(),
+    getContact(),
+    getResume(),
+  ]);
+
   return (
     <>
       <Nav />
       <main>
-        <Opening />
-        <Work />
+        <Opening profile={profile} />
+        <Work projects={projects} />
+        <Experience resume={resume} />
         <LiveDemos />
-        <TechStack />
-        <Contact />
+        <TechStack skills={skills} />
+        <Contact contact={contact} profile={profile} />
       </main>
     </>
   );

@@ -1,308 +1,216 @@
 [
   {
-    "id": "openclaw",
-    "title": "OpenClaw Agent",
-    "description": "Structured OpenClaw's modular skill architecture across 6 domains at MyVyay, expanding to 5+ concurrent sessions via a real-time Python logging pipeline. Implemented context pruning strategies to reduce LLM token usage and improve agent task success rate by 45%.",
-    "stats": "6 skill domains · 5+ concurrent sessions · 45% higher task success · context pruning",
+    "id": "friday",
+    "title": "friday",
+    "description": "Demos run without click-juggling. Common paths become token-free (replay trace). Genuinely new situations still go live to the model. Speaker stays focused on the story.",
     "tags": [
-      "Python",
-      "OpenClaw",
-      "LLMs",
-      "GitHub API",
-      "Prompt Engineering",
-      "Context Pruning"
+      "Node.js",
+      "Electron",
+      "Gemini Live",
+      "Playwright MCP",
+      "Chrome"
     ],
-    "diagramType": "multi-agent",
-    "side": "right",
+    "diagramType": "pipeline",
+    "nodes": [],
+    "edges": [],
+    "side": "left",
     "order": 1,
     "featured": true,
-    "nodes": [
-      {
-        "id": "input",
-        "label": "User Command",
-        "icon": "💬",
-        "description": "Natural language task from the user via messaging interface"
-      },
-      {
-        "id": "planner",
-        "label": "Agent Planner",
-        "icon": "🧠",
-        "description": "LLM-based planner decomposes task into sub-goals and selects skill"
-      },
-      {
-        "id": "memory",
-        "label": "Memory & Context",
-        "icon": "🗃️",
-        "description": "Context pruning to reduce token usage while preserving task history"
-      },
-      {
-        "id": "ide",
-        "label": "IDE Skill",
-        "icon": "💻",
-        "description": "Automated IDE operations — file creation, code edits, terminal commands"
-      },
-      {
-        "id": "github",
-        "label": "GitHub Skill",
-        "icon": "🔀",
-        "description": "GitHub API integration — PRs, issues, commits, workflow triggers"
-      },
-      {
-        "id": "logger",
-        "label": "Python Logger",
-        "icon": "📋",
-        "description": "Real-time logging pipeline tracking agent actions across 5+ sessions"
-      },
-      {
-        "id": "output",
-        "label": "Task Result",
-        "icon": "✅",
-        "description": "Completed task delivered back to user with execution trace"
-      }
+    "org": "personal",
+    "year": "2026",
+    "status": "active",
+    "metric": "token-free replays",
+    "stack": [
+      "Node.js",
+      "Electron",
+      "Gemini Live",
+      "Playwright MCP",
+      "Chrome"
     ],
-    "edges": [
-      {
-        "from": "input",
-        "to": "planner",
-        "animated": true
-      },
-      {
-        "from": "planner",
-        "to": "memory",
-        "animated": true
-      },
-      {
-        "from": "memory",
-        "to": "planner",
-        "animated": false
-      },
-      {
-        "from": "planner",
-        "to": "ide",
-        "animated": true
-      },
-      {
-        "from": "planner",
-        "to": "github",
-        "animated": true
-      },
-      {
-        "from": "ide",
-        "to": "logger",
-        "animated": true
-      },
-      {
-        "from": "github",
-        "to": "logger",
-        "animated": true
-      },
-      {
-        "from": "logger",
-        "to": "output",
-        "animated": true
-      }
-    ]
+    "problem": "Live demos are fragile. You're juggling speaking, clicking, and audience engagement — one wrong click breaks the flow in front of everyone.",
+    "approach": "Gemini Live API for continuous speech recognition. Playwright MCP server as the browser automation layer. Orchestrator matches spoken intent to pre-recorded browser flows — never generates actions dynamically. Core innovation: a \"DVR for LLM reasoning\" — records exact MCP tool calls and decisions so identical intents replay without invoking the model at all.",
+    "outcome": "Demos run without click-juggling. Common paths become token-free (replay trace). Genuinely new situations still go live to the model. Speaker stays focused on the story.",
+    "diagram": "[you speak]\n     │\n[electron — gemini live API]\n     │  hears intent → match flow\n     │\n[orchestrator]\n     │  execute steps\n     │\n[playwright MCP — :8931]\n     │\n[chrome — visible to audience]\n     │\n[demo site]",
+    "githubUrl": "https://github.com/itsvaradkodgire/friday"
+  },
+  {
+    "id": "runo",
+    "title": "runo",
+    "description": "Zero audible dead-air even on slow primary responses. Bridge also collects useful data during the gap, making latency productive. One voice, two engines, seamless.",
+    "tags": [
+      "Node.js",
+      "Twilio",
+      "ElevenLabs",
+      "LLM API",
+      "WebSocket",
+      "Railway"
+    ],
+    "diagramType": "pipeline",
+    "nodes": [],
+    "edges": [],
+    "side": "right",
+    "order": 2,
+    "featured": true,
+    "org": "personal",
+    "year": "2026",
+    "status": "active",
+    "metric": "0ms dead air",
+    "stack": [
+      "Node.js",
+      "Twilio",
+      "ElevenLabs",
+      "LLM API",
+      "WebSocket",
+      "Railway"
+    ],
+    "problem": "Single-agent voice AI stalls > 800ms on heavy queries — dead air on a live call, which kills the conversation and makes the AI feel broken.",
+    "approach": "Dual-agent architecture: primary agent handles the LLM call, bridge agent activates if latency exceeds 800ms using the exact same ElevenLabs cloned voice. Bridge fills time naturally while collecting qualifying data. When primary is ready, bridge finishes its sentence and hands off. Twilio WebSocket streams audio both directions. Callers never notice the switch.",
+    "outcome": "Zero audible dead-air even on slow primary responses. Bridge also collects useful data during the gap, making latency productive. One voice, two engines, seamless.",
+    "diagram": "caller speaks\n     │\n[primary agent — STT → LLM → TTS]\n     │ if > 800ms\n[bridge agent — same voice]\n     │ collects data, fills gap\n     │ primary ready →\n[bridge finishes sentence]\n     │\n[primary takes over]\n     │\ncaller never notices",
+    "githubUrl": "https://github.com/itsvaradkodgire/runo"
+  },
+  {
+    "id": "career-guidance",
+    "title": "career-guidance",
+    "description": "Profile, roadmap, ATS score, and live job matches — all personalized from a single conversation. Resume scorer gives actionable gap analysis, not vague scores.",
+    "tags": [
+      "FastAPI",
+      "Python",
+      "MongoDB",
+      "Gemini",
+      "spaCy",
+      "React",
+      "Adzuna API"
+    ],
+    "diagramType": "pipeline",
+    "nodes": [],
+    "edges": [],
+    "side": "left",
+    "order": 3,
+    "featured": true,
+    "org": "personal",
+    "year": "2026",
+    "status": "shipped",
+    "metric": "full AI career stack",
+    "stack": [
+      "FastAPI",
+      "Python",
+      "MongoDB",
+      "Gemini",
+      "spaCy",
+      "React",
+      "Adzuna API"
+    ],
+    "problem": "Job seekers had no structured way to understand where they stood, what to learn next, or whether their resume actually matched the roles they were targeting.",
+    "approach": "Conversational Gemini-powered chat extracts a structured user profile across multiple turns. spaCy-based ATS scorer benchmarks resume keywords against JD. Adzuna API for real-time job recommendations. FastAPI backend + MongoDB for session and profile persistence. Google OAuth for frictionless onboarding.",
+    "outcome": "Profile, roadmap, ATS score, and live job matches — all personalized from a single conversation. Resume scorer gives actionable gap analysis, not vague scores.",
+    "diagram": "user chat\n     │\n[gemini — profile extractor]\n     │\n[profile builder → MongoDB]\n     │\n ┌───┴────────────────┐\n ▼                    ▼\n[roadmap gen]   [resume scorer]\n                      │\n               [spaCy ATS match]\n                      │\n               [adzuna job API]",
+    "githubUrl": "https://github.com/itsvaradkodgire/career-guidance"
+  },
+  {
+    "id": "openclaw",
+    "title": "openclaw-agent",
+    "description": "Task success up 45%. 5+ concurrent sessions stable. Token cost per turn measurably down. Incident MTTR dropped from hours to minutes.",
+    "tags": [
+      "Python",
+      "LLMs",
+      "GitHub API",
+      "Prompt Eng.",
+      "Context Pruning"
+    ],
+    "diagramType": "pipeline",
+    "nodes": [],
+    "edges": [],
+    "side": "right",
+    "order": 4,
+    "featured": true,
+    "org": "MyVyay",
+    "year": "2026",
+    "status": "production",
+    "metric": "+45% task success",
+    "stack": [
+      "Python",
+      "LLMs",
+      "GitHub API",
+      "Prompt Eng.",
+      "Context Pruning"
+    ],
+    "problem": "One session worked. Five in parallel? Tokens ballooned, memory bled between sessions, failures were unreproducible. Logs were tarballed stdout.",
+    "approach": "Split into six skill domains with typed tool schemas — IDE, GitHub, memory, logger, planner, router. Replaced greedy history truncation with relevance-weighted pruning, evaluated offline against a replay corpus. Made the logger first-class: structured, indexed by session, 30s to repro any failure locally.",
+    "outcome": "Task success up 45%. 5+ concurrent sessions stable. Token cost per turn measurably down. Incident MTTR dropped from hours to minutes.",
+    "diagram": "user ──▶ planner\n       │\n       ▼\n    memory ◀── context-prune\n       │\n ┌─────┼─────┐\n ▼     ▼     ▼\nide   github logger\n │     │     │\n └─────┴─────┴──▶ result",
+    "githubUrl": "https://github.com/itsvaradkodgire"
   },
   {
     "id": "tapvision",
-    "title": "TapVision — Multi-Model AI Pipeline",
-    "description": "Developed TapVision's multi-format ingestion pipeline converting PDF, URL, and text inputs via 4 orchestrated Hugging Face models — TTS, STT, translation (MarianMT), and summarisation. Built at CDAC with Streamlit frontend, reducing latency by 35% and model size by 50% via INT4 quantization.",
-    "stats": "4 orchestrated models · 35% latency reduction · 50% smaller models · multilingual",
+    "title": "tapvision",
+    "description": "35% lower latency end-to-end. 50% smaller model footprint. Multilingual output across 3+ target languages.",
     "tags": [
-      "Python",
-      "Hugging Face",
+      "HF Transformers",
       "Ollama",
       "MarianMT",
       "gTTS",
       "Streamlit",
-      "Docker",
-      "PyTorch"
+      "Docker"
     ],
     "diagramType": "pipeline",
+    "nodes": [],
+    "edges": [],
     "side": "left",
-    "order": 2,
+    "order": 5,
     "featured": true,
-    "nodes": [
-      {
-        "id": "input",
-        "label": "Multi-Format Input",
-        "icon": "📄",
-        "description": "Accepts PDF, URL, and raw text — parsed and normalized"
-      },
-      {
-        "id": "summarise",
-        "label": "Summarisation",
-        "icon": "📝",
-        "description": "Hugging Face summarisation model condenses long-form content"
-      },
-      {
-        "id": "translate",
-        "label": "Translation",
-        "icon": "🌐",
-        "description": "MarianMT multilingual translation across 3+ target languages"
-      },
-      {
-        "id": "tts",
-        "label": "Text-to-Speech",
-        "icon": "🔊",
-        "description": "gTTS / pyttsx3 for audio output with voice command support"
-      },
-      {
-        "id": "stt",
-        "label": "Speech-to-Text",
-        "icon": "🎙️",
-        "description": "STT model for voice-driven query input"
-      },
-      {
-        "id": "quant",
-        "label": "INT4 Quantization",
-        "icon": "⚡",
-        "description": "Ollama INT4 quantization — 50% model size reduction, faster inference"
-      },
-      {
-        "id": "ui",
-        "label": "Streamlit UI",
-        "icon": "🖥️",
-        "description": "Web interface for multi-format input, output playback, and translation"
-      }
+    "org": "CDAC",
+    "year": "2025",
+    "status": "shipped",
+    "metric": "−35% latency",
+    "stack": [
+      "HF Transformers",
+      "Ollama",
+      "MarianMT",
+      "gTTS",
+      "Streamlit",
+      "Docker"
     ],
-    "edges": [
-      {
-        "from": "input",
-        "to": "summarise",
-        "animated": true
-      },
-      {
-        "from": "summarise",
-        "to": "translate",
-        "animated": true
-      },
-      {
-        "from": "translate",
-        "to": "tts",
-        "animated": true
-      },
-      {
-        "from": "stt",
-        "to": "summarise",
-        "animated": true
-      },
-      {
-        "from": "tts",
-        "to": "quant",
-        "animated": false
-      },
-      {
-        "from": "quant",
-        "to": "ui",
-        "animated": true
-      },
-      {
-        "from": "translate",
-        "to": "ui",
-        "animated": true
-      }
-    ]
+    "problem": "Users needed to feed PDFs, URLs, and raw text into a stack that could summarize, translate, and speak back — on hardware that couldn't hold full-precision models.",
+    "approach": "Orchestrated 4 Hugging Face models (TTS, STT, MarianMT, summarizer) in a unified pipeline. Ollama INT4 quantization cut model footprint in half. Streamlit frontend for fast internal iteration.",
+    "outcome": "35% lower latency end-to-end. 50% smaller model footprint. Multilingual output across 3+ target languages.",
+    "diagram": "pdf/url/text ──▶ summarise ──▶ translate\n                │            │\n                ▼            ▼\n             speech ──▶ quantize ──▶ ui",
+    "githubUrl": "https://github.com/itsvaradkodgire/Tapvision"
   },
   {
-    "id": "cms-agent",
-    "title": "Multilingual CMS AI Agent",
-    "description": "Piloted an LLM-based AI agent into a proprietary CMS via REST APIs at MyVyay, adapting the NLP layer for 3+ languages and multi-format inputs. Optimised with Hugging Face and Ollama INT4 quantization, cutting setup time by 50% and IT dependency by 70%.",
-    "stats": "3+ languages · 50% faster setup · 70% less IT dependency · production CMS",
+    "id": "cms",
+    "title": "cms-multilingual-agent",
+    "description": "50% faster setup per content asset. 70% reduction in IT dependency. Agent now handles routine CMS operations end-to-end.",
     "tags": [
       "Python",
       "LLMs",
       "REST APIs",
       "NLP",
-      "Docker",
-      "JavaScript",
       "Hugging Face",
       "Ollama"
     ],
     "diagramType": "pipeline",
+    "nodes": [],
+    "edges": [],
     "side": "right",
-    "order": 3,
+    "order": 6,
     "featured": true,
-    "nodes": [
-      {
-        "id": "user",
-        "label": "CMS User",
-        "icon": "👤",
-        "description": "User interacts via the CMS interface in their preferred language"
-      },
-      {
-        "id": "api",
-        "label": "REST API Layer",
-        "icon": "🔌",
-        "description": "FastAPI/Flask REST endpoints bridging CMS frontend to AI backend"
-      },
-      {
-        "id": "nlp",
-        "label": "NLP Processor",
-        "icon": "🧠",
-        "description": "Language detection and multi-format input parsing (text, voice, file)"
-      },
-      {
-        "id": "llm",
-        "label": "LLM Agent",
-        "icon": "🤖",
-        "description": "Ollama-hosted LLM with INT4 quantization for efficient local inference"
-      },
-      {
-        "id": "translate",
-        "label": "Multilingual Layer",
-        "icon": "🌐",
-        "description": "Handles 3+ languages — English, Hindi, Marathi — with Hugging Face models"
-      },
-      {
-        "id": "cms",
-        "label": "CMS Backend",
-        "icon": "🗄️",
-        "description": "Proprietary CMS — content creation, editing, and management automation"
-      },
-      {
-        "id": "response",
-        "label": "AI Response",
-        "icon": "✅",
-        "description": "Contextual response delivered in user's language with CMS action taken"
-      }
+    "org": "MyVyay",
+    "year": "2025",
+    "status": "production",
+    "metric": "−70% IT dependency",
+    "stack": [
+      "Python",
+      "LLMs",
+      "REST APIs",
+      "NLP",
+      "Hugging Face",
+      "Ollama"
     ],
-    "edges": [
-      {
-        "from": "user",
-        "to": "api",
-        "animated": true
-      },
-      {
-        "from": "api",
-        "to": "nlp",
-        "animated": true
-      },
-      {
-        "from": "nlp",
-        "to": "translate",
-        "animated": true
-      },
-      {
-        "from": "translate",
-        "to": "llm",
-        "animated": true
-      },
-      {
-        "from": "llm",
-        "to": "cms",
-        "animated": true
-      },
-      {
-        "from": "cms",
-        "to": "response",
-        "animated": true
-      },
-      {
-        "from": "response",
-        "to": "user",
-        "animated": false
-      }
-    ]
+    "problem": "Content teams waited on IT for every CMS change. Multilingual content meant multiple round-trips per asset.",
+    "approach": "Piloted an LLM agent into the proprietary CMS via REST APIs. Adapted the NLP layer for 3+ languages and multi-format inputs. Ollama INT4 for local inference — no external API costs.",
+    "outcome": "50% faster setup per content asset. 70% reduction in IT dependency. Agent now handles routine CMS operations end-to-end.",
+    "diagram": "cms user ──▶ rest ──▶ nlp ──▶ multilingual\n                            │\n                            ▼\n                        llm agent ──▶ cms backend",
+    "githubUrl": "https://github.com/itsvaradkodgire"
   }
 ]

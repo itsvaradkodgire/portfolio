@@ -75,7 +75,7 @@ export function Nav() {
             [ contact ]
           </a>
           <ThemeToggle />
-          <a href="/resume.pdf" download style={{ color: 'var(--accent)', transition: 'color .15s' }}
+          <a href="/api/resume/download" download="varad-kodgire-resume.pdf" style={{ color: 'var(--accent)', transition: 'color .15s' }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-hover)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--accent)')}>
             [ resume.pdf&nbsp;↓ ]
