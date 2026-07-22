@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { saveContent } from '@/app/components/admin/saveContent';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, ChevronUp, ChevronDown } from 'lucide-react';
 import { FormField } from '@/app/components/admin/FormField';
 import { TagInput } from '@/app/components/admin/TagInput';
 import type { ResumeData, EducationEntry, ExperienceEntry, CertificationEntry } from '@/lib/types';
@@ -22,6 +22,16 @@ export default function AdminResume() {
     setSaving(true);
     await saveContent('/api/content/resume', data, 'Resume settings saved');
     setSaving(false);
+  };
+
+  // Reorder an experience entry up (-1) or down (+1). The public site renders
+  // experience in this array order, so this controls the on-page position.
+  const moveExp = (i: number, dir: -1 | 1) => {
+    const j = i + dir;
+    if (j < 0 || j >= data.experience.length) return;
+    const arr = [...data.experience];
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+    setData({ ...data, experience: arr });
   };
 
   const TABS = [
@@ -115,6 +125,27 @@ export default function AdminResume() {
           </button>
           {data.experience.map((exp, i) => (
             <div key={exp.id} className="bg-bg-card border border-border-subtle rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
+                  {String(i + 1).padStart(2, '0')} · {exp.company || 'New role'}
+                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => moveExp(i, -1)}
+                    disabled={i === 0}
+                    title="Move up"
+                    className="p-1.5 rounded-md border border-border-subtle text-text-muted hover:text-text-primary hover:border-border-dim transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                    <ChevronUp size={14} />
+                  </button>
+                  <button
+                    onClick={() => moveExp(i, 1)}
+                    disabled={i === data.experience.length - 1}
+                    title="Move down"
+                    className="p-1.5 rounded-md border border-border-subtle text-text-muted hover:text-text-primary hover:border-border-dim transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                    <ChevronDown size={14} />
+                  </button>
+                </div>
+              </div>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <FormField label="Company" value={exp.company}
                   onChange={(e) => { const arr = [...data.experience]; arr[i].company = (e.target as HTMLInputElement).value; setData({ ...data, experience: arr }); }} />
