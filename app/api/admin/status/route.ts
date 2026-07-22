@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 
-// Lightweight runtime diagnostics. Returns ONLY booleans (never secret values)
-// so it's safe to hit publicly while debugging a deployment. Confirms whether
-// the required environment variables actually reached the running deployment.
+// Lightweight runtime diagnostics. Returns ONLY booleans / non-secret info so
+// it's safe to hit while debugging a deployment. With ?selftest=1 it performs a
+// real Vercel Blob write + read-back and reports the exact error if it fails,
+// which is how we diagnose "saves don't persist".
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
-  return NextResponse.json({
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const runSelfTest = url.searchParams.get('selftest') === '1';
+
+  const base = {
     nodeEnv: process.env.NODE_ENV ?? null,
     env: {
       ADMIN_PASSWORD: Boolean(process.env.ADMIN_PASSWORD),
@@ -15,11 +19,46 @@ export async function GET() {
       BLOB_READ_WRITE_TOKEN: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
       KV_REST_API_URL: Boolean(process.env.KV_REST_API_URL),
     },
-    // What content storage the running code will actually use for writes.
     contentStore:
       process.env.NODE_ENV === 'production' && process.env.BLOB_READ_WRITE_TOKEN
         ? 'vercel-blob'
         : 'local-filesystem (edits will NOT persist on Vercel)',
     timestamp: new Date().toISOString(),
-  });
+  };
+
+  if (!runSelfTest) {
+    return NextResponse.json(base);
+  }
+
+  // ── Blob write/read self-test ──────────────────────────────────────────────
+  const selfTest: Record<string, unknown> = {};
+  try {
+    const { put, list } = await import('@vercel/blob');
+    const key = 'content/_selftest.json';
+    const payload = JSON.stringify({ ok: true, at: new Date().toISOString() });
+
+    const putResult = await put(key, payload, {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false,
+      cacheControlMaxAge: 0,
+    });
+    selfTest.put = 'ok';
+    selfTest.url = putResult.url;
+
+    const { blobs } = await list({ prefix: key });
+    selfTest.listCount = blobs.length;
+
+    if (blobs.length > 0) {
+      const res = await fetch(`${blobs[0].url}?v=${Date.now()}`, { cache: 'no-store' });
+      selfTest.readBack = res.ok ? await res.json() : `read failed HTTP ${res.status}`;
+    }
+    selfTest.result = 'WRITE OK';
+  } catch (err) {
+    selfTest.result = 'WRITE FAILED';
+    selfTest.error = err instanceof Error ? err.message : String(err);
+    selfTest.errorName = err instanceof Error ? err.name : undefined;
+  }
+
+  return NextResponse.json({ ...base, selfTest });
 }
