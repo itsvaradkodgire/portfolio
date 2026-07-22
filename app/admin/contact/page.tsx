@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { saveContent } from '@/app/components/admin/saveContent';
 import { Plus, X } from 'lucide-react';
 import { FormField } from '@/app/components/admin/FormField';
 import type { ContactData, ContactLink } from '@/lib/types';
@@ -20,13 +20,8 @@ export default function AdminContact() {
 
   const save = async () => {
     setSaving(true);
-    const res = await fetch('/api/content/contact', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    await saveContent('/api/content/contact', data, 'Contact saved');
     setSaving(false);
-    res.ok ? toast.success('Contact saved') : toast.error('Save failed');
   };
 
   const updateLink = (i: number, link: ContactLink) => {

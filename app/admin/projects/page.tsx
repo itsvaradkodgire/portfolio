@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { saveContent } from '@/app/components/admin/saveContent';
 import { Plus, Pencil, Trash2, ChevronUp, ChevronDown, X } from 'lucide-react';
 import { FormField } from '@/app/components/admin/FormField';
 import { TagInput } from '@/app/components/admin/TagInput';
@@ -193,13 +194,10 @@ export default function AdminProjects() {
     fetch('/api/content/projects').then((r) => r.json()).then((d) => setProjects(d.sort((a: Project, b: Project) => a.order - b.order)));
   }, []);
 
-  const save = async (updated: Project[]) => {
-    await fetch('/api/content/projects', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updated),
-    });
-    setProjects(updated);
+  const save = async (updated: Project[]): Promise<boolean> => {
+    const ok = await saveContent('/api/content/projects', updated, 'Projects saved');
+    if (ok) setProjects(updated);
+    return ok;
   };
 
   const saveProject = async (p: Project) => {
@@ -210,16 +208,14 @@ export default function AdminProjects() {
     } else {
       updated = [...projects, { ...p, order: projects.length + 1 }];
     }
-    await save(updated);
-    setEditing(null);
-    toast.success('Project saved');
+    const ok = await save(updated);
+    if (ok) setEditing(null);
   };
 
   const deleteProject = async (id: string) => {
     const updated = projects.filter((p) => p.id !== id);
-    await save(updated);
-    setConfirmDelete(null);
-    toast.success('Project deleted');
+    const ok = await save(updated);
+    if (ok) setConfirmDelete(null);
   };
 
   const move = async (i: number, dir: -1 | 1) => {

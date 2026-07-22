@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { saveContent } from '@/app/components/admin/saveContent';
 import { Plus, X, ChevronUp, ChevronDown } from 'lucide-react';
 import { TagInput } from '@/app/components/admin/TagInput';
 import type { DemosData, TerminalCommand } from '@/lib/types';
@@ -18,13 +18,8 @@ export default function AdminDemos() {
 
   const save = async () => {
     setSaving(true);
-    const res = await fetch('/api/content/demos', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    await saveContent('/api/content/demos', data, 'Demos saved');
     setSaving(false);
-    res.ok ? toast.success('Demos saved') : toast.error('Save failed');
   };
 
   const updateCmd = (i: number, cmd: TerminalCommand) => {

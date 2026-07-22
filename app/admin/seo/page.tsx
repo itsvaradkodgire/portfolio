@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { saveContent } from '@/app/components/admin/saveContent';
 import { FormField } from '@/app/components/admin/FormField';
 import type { MetaData } from '@/lib/types';
 
@@ -17,13 +17,8 @@ export default function AdminSEO() {
 
   const save = async () => {
     setSaving(true);
-    const res = await fetch('/api/content/meta', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    await saveContent('/api/content/meta', data, 'SEO settings saved');
     setSaving(false);
-    res.ok ? toast.success('SEO settings saved') : toast.error('Save failed');
   };
 
   return (

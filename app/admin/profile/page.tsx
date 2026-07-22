@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { saveContent } from '@/app/components/admin/saveContent';
 import { FormField } from '@/app/components/admin/FormField';
 import type { Profile } from '@/lib/types';
 
@@ -17,14 +17,8 @@ export default function AdminProfile() {
 
   const save = async () => {
     setSaving(true);
-    const res = await fetch('/api/content/profile', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    await saveContent('/api/content/profile', data, 'Profile saved');
     setSaving(false);
-    if (res.ok) toast.success('Profile saved');
-    else toast.error('Save failed');
   };
 
   return (

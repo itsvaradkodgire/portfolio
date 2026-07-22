@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { saveContent } from '@/app/components/admin/saveContent';
 import { Plus, X, ChevronUp, ChevronDown } from 'lucide-react';
 import type { SkillCategory, Skill } from '@/lib/types';
 
@@ -17,14 +17,9 @@ export default function AdminSkills() {
 
   const save = async (cats: SkillCategory[]) => {
     setSaving(true);
-    const res = await fetch('/api/content/skills', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(cats),
-    });
+    const ok = await saveContent('/api/content/skills', cats, 'Skills saved');
     setSaving(false);
-    if (res.ok) { setCategories(cats); toast.success('Skills saved'); }
-    else toast.error('Save failed');
+    if (ok) setCategories(cats);
   };
 
   const updateCategory = (i: number, cat: SkillCategory) => {

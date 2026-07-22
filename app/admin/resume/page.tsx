@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { saveContent } from '@/app/components/admin/saveContent';
 import { Plus, X } from 'lucide-react';
 import { FormField } from '@/app/components/admin/FormField';
 import { TagInput } from '@/app/components/admin/TagInput';
@@ -20,13 +20,8 @@ export default function AdminResume() {
 
   const save = async () => {
     setSaving(true);
-    const res = await fetch('/api/content/resume', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    await saveContent('/api/content/resume', data, 'Resume settings saved');
     setSaving(false);
-    res.ok ? toast.success('Resume settings saved') : toast.error('Save failed');
   };
 
   const TABS = [

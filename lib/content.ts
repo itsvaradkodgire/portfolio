@@ -14,7 +14,7 @@ const CONTENT_DIR = path.join(process.cwd(), 'content');
 
 // ─── Blob storage helpers (production) ──────────────────────────────────────
 async function readFromBlob(key: ContentKey): Promise<unknown> {
-  const { list, head } = await import('@vercel/blob');
+  const { list } = await import('@vercel/blob');
   const blobKey = `content/${key}.json`;
 
   try {
@@ -24,7 +24,12 @@ async function readFromBlob(key: ContentKey): Promise<unknown> {
       return readFromLocal(key);
     }
     const blob = blobs[0];
-    const response = await fetch(blob.url);
+    // Vercel Blob is served through a CDN. Because we overwrite the same path
+    // on every save (addRandomSuffix: false), a cached copy can otherwise be
+    // returned after a write. Bust the cache with the blob's uploadedAt and
+    // force a fresh fetch so admin edits are read back immediately.
+    const bust = blob.uploadedAt ? new Date(blob.uploadedAt).getTime() : Date.now();
+    const response = await fetch(`${blob.url}?v=${bust}`, { cache: 'no-store' });
     return response.json();
   } catch {
     return readFromLocal(key);
@@ -39,6 +44,8 @@ async function writeToBlob(key: ContentKey, data: unknown): Promise<void> {
     access: 'public',
     contentType: 'application/json',
     addRandomSuffix: false,
+    // Keep the CDN cache short so freshly-saved content is read back quickly.
+    cacheControlMaxAge: 0,
   });
 }
 
