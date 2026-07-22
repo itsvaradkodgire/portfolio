@@ -1,26 +1,66 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getProfile, getProjects, getSkills, getResume, getContact } from '@/lib/content';
+import type { Profile, Project, SkillCategory, ResumeData, ContactData } from '@/lib/types';
+
+// Always read the latest content so the assistant reflects admin edits.
+export const dynamic = 'force-dynamic';
 
 const MODEL = 'gemini-2.5-flash';
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
-const SYSTEM_PROMPT = `You are an AI assistant embedded in Varad Kodgire's portfolio website. Answer questions about Varad concisely and directly. Match the terminal aesthetic — be terse, technical, and honest. 1–3 sentences unless asked for more.
+// Build the system prompt from LIVE content, so the chatbot's knowledge always
+// matches what's in the admin panel instead of a stale hardcoded blob.
+function buildSystemPrompt(
+  profile: Profile,
+  projects: Project[],
+  skills: SkillCategory[],
+  resume: ResumeData,
+  contact: ContactData
+): string {
+  const projectLines = [...projects]
+    .sort((a, b) => (a.order ?? 99) - (b.order ?? 99))
+    .map((p) => {
+      const meta = [p.org, p.status].filter(Boolean).join(', ');
+      const impact = p.metric ? ` ${p.metric}.` : '';
+      const stack = (p.stack && p.stack.length ? p.stack : p.tags) ?? [];
+      const gh = p.githubUrl ? ` ${p.githubUrl.replace(/^https?:\/\//, '')}` : '';
+      return `- ${p.title}${meta ? ` (${meta})` : ''}: ${p.outcome || p.description}${impact}${stack.length ? ` [${stack.join(', ')}]` : ''}${gh}`;
+    })
+    .join('\n');
+
+  const stackLine = skills.flatMap((c) => c.items.map((s) => s.name)).join(' · ');
+
+  const experienceLines = (resume.experience ?? [])
+    .map((e) => `- ${e.title} at ${e.company} (${e.startDate}–${e.endDate}): ${e.bullets[0] ?? ''}`)
+    .join('\n');
+
+  const educationLine = (resume.education ?? [])
+    .map((e) => `${e.degree}, ${e.school} (${e.year})`)
+    .join(' · ');
+
+  const contactLine = contact.links
+    .filter((l) => l.visible)
+    .map((l) => `${l.label}: ${l.url.replace(/^(mailto:|tel:)/, '')}`)
+    .join(' | ');
+
+  return `You are an AI assistant embedded in ${profile.name}'s portfolio website. Answer questions about ${profile.name} concisely and directly. Match the terminal aesthetic — be terse, technical, and honest. 1–3 sentences unless asked for more. Only use the facts below; if something isn't covered, say you only know about ${profile.name} and redirect. Never invent projects, numbers, or contact details.
 
 WHO:
-Varad Kodgire — Applied AI Developer, Pune, India. Building at MyVyay. Open to full-time AI Developer / LLM Engineer / Applied AI Researcher roles (Bangalore + remote).
+${profile.name} — ${profile.title}. ${profile.location ? `Based in ${profile.location}. ` : ''}${resume.baseSummary ?? ''}
 
 PROJECTS:
-- friday: AI co-presenter using Gemini Live + Playwright MCP. Speaks your demo live. "DVR for LLM reasoning" — records MCP tool calls so common paths replay token-free next time. github.com/itsvaradkodgire/friday
-- runo: Dual-agent voice call system. Bridge agent fires if primary LLM > 800ms, uses same ElevenLabs voice. Zero dead air on calls. github.com/itsvaradkodgire/runo
-- career-guidance: AI career platform — Gemini chat, spaCy ATS resume scorer, Adzuna job API. FastAPI + MongoDB backend. github.com/itsvaradkodgire/career-guidance
-- openclaw-agent (MyVyay, prod): Multi-session LLM agent framework. +45% task success. Relevance-weighted context pruning.
-- tapvision (CDAC, shipped): 4 HuggingFace models in a unified pipeline. −35% latency, INT4 quantization, multilingual.
-- cms-multilingual-agent (MyVyay, prod): LLM agent into proprietary CMS via REST. −70% IT dependency.
+${projectLines || '(none listed)'}
 
-STACK: Python · LLMs · Docker · FastAPI · HuggingFace · Gemini · Playwright MCP · Gemma · Node.js · Twilio · ElevenLabs · MongoDB · spaCy · LangChain · RAG · Ollama · Kubernetes
+EXPERIENCE:
+${experienceLines || '(none listed)'}
 
-CONTACT: itsvaradkodgire@gmail.com | github.com/itsvaradkodgire | linkedin.com/in/varad-kodgire-050171208 | +91 8805 200 924
+EDUCATION:
+${educationLine || '(none listed)'}
 
-If asked something outside Varad's portfolio, briefly say you only know about Varad and redirect.`;
+STACK: ${stackLine}
+
+CONTACT: ${contactLine}`;
+}
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.GOOGLE_AI_KEY;
@@ -32,6 +72,21 @@ export async function POST(req: NextRequest) {
     messages: { role: 'user' | 'assistant'; content: string }[];
   };
 
+  // Load live content and build the grounded system prompt.
+  let systemPrompt: string;
+  try {
+    const [profile, projects, skills, resume, contact] = await Promise.all([
+      getProfile(),
+      getProjects(),
+      getSkills(),
+      getResume(),
+      getContact(),
+    ]);
+    systemPrompt = buildSystemPrompt(profile, projects, skills, resume, contact);
+  } catch {
+    systemPrompt = `You are an AI assistant on Varad Kodgire's portfolio. Answer briefly and honestly. If unsure, say you only know about Varad.`;
+  }
+
   // Convert to Gemini API format (user/model roles)
   const contents = messages.map((m) => ({
     role: m.role === 'assistant' ? 'model' : 'user',
@@ -39,7 +94,7 @@ export async function POST(req: NextRequest) {
   }));
 
   const body = {
-    system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+    system_instruction: { parts: [{ text: systemPrompt }] },
     contents,
     generationConfig: {
       temperature: 0.7,
