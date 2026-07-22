@@ -13,25 +13,26 @@ const isDev = process.env.NODE_ENV !== 'production' || !process.env.BLOB_READ_WR
 const CONTENT_DIR = path.join(process.cwd(), 'content');
 
 // ─── Blob storage helpers (production) ──────────────────────────────────────
+// The connected Vercel Blob store is PRIVATE, so we use access: 'private'.
+// Private blobs are not publicly fetchable by URL — read them back with get().
+const BLOB_ACCESS = 'private' as const;
+
 async function readFromBlob(key: ContentKey): Promise<unknown> {
-  const { list } = await import('@vercel/blob');
+  const { get } = await import('@vercel/blob');
   const blobKey = `content/${key}.json`;
 
   try {
-    const { blobs } = await list({ prefix: blobKey });
-    if (blobs.length === 0) {
-      // Fallback: read from local file (initial seed)
+    // useCache: false → always read the freshest content from origin, so admin
+    // edits are reflected immediately instead of returning a cached copy.
+    const result = await get(blobKey, { access: BLOB_ACCESS, useCache: false });
+    if (!result?.stream) {
+      // Nothing stored yet — fall back to the bundled seed file.
       return readFromLocal(key);
     }
-    const blob = blobs[0];
-    // Vercel Blob is served through a CDN. Because we overwrite the same path
-    // on every save (addRandomSuffix: false), a cached copy can otherwise be
-    // returned after a write. Bust the cache with the blob's uploadedAt and
-    // force a fresh fetch so admin edits are read back immediately.
-    const bust = blob.uploadedAt ? new Date(blob.uploadedAt).getTime() : Date.now();
-    const response = await fetch(`${blob.url}?v=${bust}`, { cache: 'no-store' });
-    return response.json();
+    const text = await new Response(result.stream as ReadableStream).text();
+    return JSON.parse(text);
   } catch {
+    // Not found or any error → fall back to the local seed.
     return readFromLocal(key);
   }
 }
@@ -41,10 +42,11 @@ async function writeToBlob(key: ContentKey, data: unknown): Promise<void> {
   const blobKey = `content/${key}.json`;
   const content = JSON.stringify(data, null, 2);
   await put(blobKey, content, {
-    access: 'public',
+    access: BLOB_ACCESS,
     contentType: 'application/json',
     addRandomSuffix: false,
-    // Keep the CDN cache short so freshly-saved content is read back quickly.
+    allowOverwrite: true,
+    // Keep the cache short so freshly-saved content is read back quickly.
     cacheControlMaxAge: 0,
   });
 }

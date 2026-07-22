@@ -33,25 +33,25 @@ export async function GET(request: Request) {
   // ── Blob write/read self-test ──────────────────────────────────────────────
   const selfTest: Record<string, unknown> = {};
   try {
-    const { put, list } = await import('@vercel/blob');
+    const { put, get } = await import('@vercel/blob');
     const key = 'content/_selftest.json';
     const payload = JSON.stringify({ ok: true, at: new Date().toISOString() });
 
     const putResult = await put(key, payload, {
-      access: 'public',
+      access: 'private',
       contentType: 'application/json',
       addRandomSuffix: false,
+      allowOverwrite: true,
       cacheControlMaxAge: 0,
     });
     selfTest.put = 'ok';
     selfTest.url = putResult.url;
 
-    const { blobs } = await list({ prefix: key });
-    selfTest.listCount = blobs.length;
-
-    if (blobs.length > 0) {
-      const res = await fetch(`${blobs[0].url}?v=${Date.now()}`, { cache: 'no-store' });
-      selfTest.readBack = res.ok ? await res.json() : `read failed HTTP ${res.status}`;
+    const readBack = await get(key, { access: 'private', useCache: false });
+    if (readBack?.stream) {
+      selfTest.readBack = JSON.parse(await new Response(readBack.stream as ReadableStream).text());
+    } else {
+      selfTest.readBack = 'no stream returned';
     }
     selfTest.result = 'WRITE OK';
   } catch (err) {
