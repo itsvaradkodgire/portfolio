@@ -20,11 +20,15 @@ export function HeroChat() {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Scroll ONLY the inner message list, never the page. Using
+    // scrollIntoView() here would scroll the whole window and make the page
+    // "bounce" up on each new message.
+    const el = messagesRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, loading]);
 
   const send = async (text: string) => {
@@ -51,7 +55,7 @@ export function HeroChat() {
       setMessages([...next, { role: 'assistant', text: 'connection error — is ollama running?' }]);
     } finally {
       setLoading(false);
-      inputRef.current?.focus();
+      inputRef.current?.focus({ preventScroll: true });
     }
   };
 
@@ -125,7 +129,7 @@ export function HeroChat() {
       </div>
 
       {/* Messages */}
-      <div style={{
+      <div ref={messagesRef} style={{
         padding: '14px 20px',
         minHeight: 280,
         maxHeight: 320,
@@ -158,8 +162,6 @@ export function HeroChat() {
             <span className="lc-caret" style={{ background: 'var(--teal)' }} />
           </div>
         )}
-
-        <div ref={bottomRef} />
       </div>
 
       {/* Input */}
